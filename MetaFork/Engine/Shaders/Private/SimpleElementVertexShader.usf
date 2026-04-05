@@ -1,0 +1,63 @@
+// Copyright Epic Games, Inc. All Rights Reserved.
+
+/*=============================================================================
+	SimpleElementVertexShader.hlsl: Vertex shader for drawing simple elements.
+=============================================================================*/
+
+#include "Common.ush"
+
+#ifndef ENABLE_LWC
+#define ENABLE_LWC 0
+#endif
+
+// BEGIN META SECTION - Multiview Debug Primitives
+float4x4 Transform[2];
+#if ENABLE_LWC
+float3 TransformPositionHigh[2];
+#endif
+// END META SECTION - Multiview Debug Primitives
+
+void Main(
+	in float4 InPositionHigh : ATTRIBUTE0,
+	in float4 InPositionLow : ATTRIBUTE1,
+	in float2 InTextureCoordinate : ATTRIBUTE2,
+	in float4 InColor : ATTRIBUTE3,
+	in float4 InHitProxyId : ATTRIBUTE4,
+// BEGIN META SECTION - Multiview Debug Primitives
+	#if MOBILE_MULTI_VIEW && !INSTANCED_STEREO
+	in uint ViewId : SV_ViewID,
+	#endif
+// END META SECTION - Multiview Debug Primitives
+	out float2 OutTextureCoordinate : TEXCOORD0,
+	out float4 OutColor : TEXCOORD1,
+	out float4 OutHitProxyId : TEXCOORD2,
+	out float4 OutPosition : SV_POSITION
+	)
+{
+// BEGIN META SECTION - Multiview Debug Primitives
+#if MOBILE_MULTI_VIEW && !INSTANCED_STEREO
+	float4x4 TransformToUse = Transform[ViewId];
+#if ENABLE_LWC
+	float3 PositionHighToUse = TransformPositionHigh[ViewId];
+#endif
+#else
+	float4x4 TransformToUse = Transform[0];
+#if ENABLE_LWC
+	float3 PositionHighToUse = TransformPositionHigh[0];
+#endif
+#endif
+
+#if ENABLE_LWC
+	FDFVector4 InPosition = MakeDFVector4(InPositionHigh, InPositionLow);
+	FDFInverseMatrix WorldToClip = MakeDFInverseMatrix(PositionHighToUse, TransformToUse);
+	OutPosition = DFMultiplyDemote(InPosition, WorldToClip);
+	OutPosition.z = max(OutPosition.z, 0);
+#else
+	OutPosition = mul(InPositionHigh, TransformToUse);
+#endif
+// END META SECTION - Multiview Debug Primitives
+
+	OutTextureCoordinate = InTextureCoordinate;
+	OutColor = InColor;
+	OutHitProxyId = InHitProxyId;
+}

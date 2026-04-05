@@ -1,0 +1,15 @@
+﻿Meta repo: C:\Users\luisn\Documents\GitHub\Epic\5.6
+Upstream repo: C:\Users\luisn\Documents\GitHub\UE
+Output root: C:\MetaAuditOutput
+
+Patterns pesquisadas:
+ - begin meta section
+ - BEGIN META SECTION
+ - WITH_OCULUS_BRANCH
+ - OCULUS_BRANCH
+
+Total de matches: 965
+Total de ficheiros Ãºnicos encontrados: 222
+Total copiados da Meta: 222
+Total copiados do Upstream: 222
+Total em falta no Upstream: 0
