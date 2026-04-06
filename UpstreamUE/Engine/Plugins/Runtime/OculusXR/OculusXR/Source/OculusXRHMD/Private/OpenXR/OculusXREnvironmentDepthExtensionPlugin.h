@@ -24,7 +24,7 @@ namespace OculusXR
 	void RenderEnvironmentDepthMinMaxTexture_RenderThread(IRendererModule* RendererModule, FTextureRHIRef EnvironmentDepthMinMaxTexture,
 		FTextureRHIRef EnvironmentDepthSwapchain, FRHICommandListImmediate& RHICmdList);
 
-//#ifdef WITH_OCULUS_BRANCH
+#ifdef WITH_OCULUS_BRANCH
 
 	extern PFN_xrCreateEnvironmentDepthProviderMETA xrCreateEnvironmentDepthProviderMETA;
 	extern PFN_xrDestroyEnvironmentDepthProviderMETA xrDestroyEnvironmentDepthProviderMETA;
@@ -42,9 +42,9 @@ namespace OculusXR
 	public:
 		void RegisterOpenXRExtensionPlugin()
 		{
-//#if defined(WITH_OCULUS_BRANCH)
+#if defined(WITH_OCULUS_BRANCH)
 			RegisterOpenXRExtensionModularFeature();
-//#endif
+#endif
 		}
 
 		virtual void PostCreateSession(XrSession InSession) override;
@@ -70,10 +70,10 @@ namespace OculusXR
 		virtual bool OnEndGameFrame(FWorldContext& WorldContext) override;
 		virtual void OnDestroySession(XrSession InSession) override;
 		virtual const void* OnLocateViews(XrSession InSession, XrTime InDisplayTime, XrViewConfigurationType ViewConfigurationType, const void* InNext) override;
-//#ifdef WITH_OCULUS_BRANCH
+#ifdef WITH_OCULUS_BRANCH
 		virtual bool FindEnvironmentDepthTexture_RenderThread(FTextureRHIRef& OutTexture, FTextureRHIRef& OutMinMaxTexture,
 			FVector2f& OutDepthFactors, FMatrix44f OutScreenToDepthMatrices[2], FMatrix44f OutDepthViewProjMatrices[2]) override;
-//#endif // WITH_OCULUS_BRANCH
+#endif // WITH_OCULUS_BRANCH
 		bool StartEnvironmentDepth();
 		bool StopEnvironmentDepth();
 		void SetXROcclusionsMode(UObject* WorldContextObject, EOculusXROcclusionsMode Mode);
@@ -142,5 +142,5 @@ namespace OculusXR
 			const TArray<TextureHandle>& InTextures, ETextureCreateFlags InTexCreateFlags, const TCHAR* DebugName) const;
 		void PrepareAndRenderHardOcclusions_RenderThread(FRHICommandList& RHICmdList, FSceneView& InView);
 	};
-//#endif
+#endif
 } // namespace OculusXR

@@ -27,7 +27,7 @@
 
 namespace
 {
-//#ifdef WITH_OCULUS_BRANCH
+#ifdef WITH_OCULUS_BRANCH
 #if OCULUS_HMD_SUPPORTED_PLATFORMS_VULKAN
 	FTextureRHIRef CreateTextureVulkan_RenderThread(FRHICommandListImmediate& RHICmdList, uint32 InSizeX, uint32 InSizeY, EPixelFormat InFormat, const FClearValueBinding& InBinding,
 		uint32 InNumMips, uint32 InNumSamples, uint32 InNumSamplesTileMem, OculusXRHMD::FCustomPresent::ETextureType InResourceType, OculusXR::TextureHandle InTexture,
@@ -237,7 +237,7 @@ namespace
 		return Matrix;
 	}
 
-//#endif
+#endif
 #if !UE_VERSION_OLDER_THAN(5, 3, 0)
 	BEGIN_SHADER_PARAMETER_STRUCT(FDrawRectangleParameters, )
 	SHADER_PARAMETER(FVector4f, PosScaleBias)
@@ -447,7 +447,7 @@ namespace OculusXR
 		}
 	}
 
-//#ifdef WITH_OCULUS_BRANCH
+#ifdef WITH_OCULUS_BRANCH
 	PFN_xrCreateEnvironmentDepthProviderMETA xrCreateEnvironmentDepthProviderMETA = nullptr;
 	PFN_xrDestroyEnvironmentDepthProviderMETA xrDestroyEnvironmentDepthProviderMETA = nullptr;
 	PFN_xrStartEnvironmentDepthProviderMETA xrStartEnvironmentDepthProviderMETA = nullptr;
@@ -1099,11 +1099,11 @@ namespace OculusXR
 		bHardOcclusionsEnabled = (Mode == EOculusXROcclusionsMode::HardOcclusions_Deprecated);
 		bSoftOcclusionsEnabled = (Mode == EOculusXROcclusionsMode::SoftOcclusions);
 
-//#if defined(WITH_OCULUS_BRANCH)
+#if defined(WITH_OCULUS_BRANCH)
 		WorldContextObject->GetWorld()->Scene->SetEnableXRPassthroughSoftOcclusions(Mode == EOculusXROcclusionsMode::SoftOcclusions);
-//#else
+#else
 		ensureMsgf(Mode != EOculusXROcclusionsMode::SoftOcclusions, TEXT("Soft occlusions are only supported with the Oculus branch of the Unreal Engine"));
-//#endif
+#endif
 	}
 
 	bool FEnvironmentDepthExtensionPlugin::IsEnvironmentDepthStarted() const
@@ -1185,7 +1185,7 @@ namespace OculusXR
 		return XR_TYPE_SWAPCHAIN_IMAGE_VULKAN_KHR;
 	}
 
-//#if defined(WITH_OCULUS_BRANCH)
+#if defined(WITH_OCULUS_BRANCH)
 	bool FEnvironmentDepthExtensionPlugin::FindEnvironmentDepthTexture_RenderThread(FTextureRHIRef& OutTexture, FTextureRHIRef& OutMinMaxTexture,
 		FVector2f& OutDepthFactors, FMatrix44f OutScreenToDepthMatrices[2], FMatrix44f OutDepthViewProjMatrices[2])
 	{
@@ -1209,6 +1209,6 @@ namespace OculusXR
 		}
 		return false;
 	}
-//#endif // defined(WITH_OCULUS_BRANCH)
-//#endif
+#endif // defined(WITH_OCULUS_BRANCH)
+#endif
 } // namespace OculusXR

@@ -314,30 +314,10 @@ public:
 		return InNext;
 	}
 
-	virtual const void* OnLocateViews(
-		XrSession InSession,
-		XrTime InDisplayTime,
-		const void* InNext)
+	virtual const void* OnLocateViews(XrSession InSession, XrTime InDisplayTime, const void* InNext)
 	{
 		return InNext;
 	}
-
-	virtual const void* OnLocateViews(
-		XrSession InSession,
-		XrTime InDisplayTime,
-		XrViewConfigurationType ViewConfigurationType,
-		const void* InNext)
-	{
-		return OnLocateViews(InSession, InDisplayTime, InNext);
-	}
-
-	// BEGIN META SECTION - OpenXR Native Environment Depth
-	virtual void OnBeginRenderingLate_RenderThread(XrSession InSession, FRDGBuilder& GraphBuilder)
-	{
-	}
-
-
-	// END META SECTION - OpenXR Native Environment Depth
 
 	/**
 	* Callbacks with returned pointer added to next chain, do *not* return pointers to structs on the stack.
@@ -570,27 +550,6 @@ public:
 		return false;
 	}
 	
-	// BEGIN META SECTION - OpenXR Native Environment Depth
-	virtual bool FindEnvironmentDepthTexture_RenderThread(FTextureRHIRef& OutTexture, FTextureRHIRef& OutMinMaxTexture, FVector2f& OutDepthFactors, FMatrix44f OutScreenToDepthMatrices[2], FMatrix44f OutDepthViewProjMatrices[2]) { return false; }
-
-	virtual void PostRenderBasePassMobile_RenderThread(FRHICommandList& RHICmdList, FSceneView& InView)
-	{
-	}
-
-	virtual void PostRenderBasePassDeferred_RenderThread(FRDGBuilder& GraphBuilder, FSceneView& InView, const FRenderTargetBindingSlots& RenderTargets, TRDGUniformBufferRef<FSceneTextureUniformParameters> SceneTextures)
-	{
-	}
-
-	virtual bool OnStartGameFrame(FWorldContext& WorldContext)
-	{
-		return true;
-	}
-
-	virtual bool OnEndGameFrame(FWorldContext& WorldContext)
-	{
-		return true;
-	}
-	// END META SECTION - OpenXR Native Environment Depth
 	/**
 	 * Start the AR system.
 	 *
