@@ -709,16 +709,14 @@ void MobileCustomResolve_MainPS(
 	const float OneOverPreExposure = ResolvedView.OneOverPreExposure;
 
 	half4 SceneColor = FetchAndResolveSceneColor(UV, GetEyeIndex(StereoInput));
-	//SceneColor.a = 1.0;
+	SceneColor.a = 1.0;
 
 	half3 LinearColor = SceneColor.rgb * OneOverPreExposure;
 	LinearColor *= ColorScale0.rgb; // SceneColorTint
 	half3 DeviceColor = ColorLookupTable(LinearColor);
 
 	OutColor.rgb = DeviceColor;
-	OutColor.a = SceneColor.a;
-	
-
+	OutColor.a = 1.0;
 
 // BEGIN META SECTION - Tonemap Subpass Depth Resolve
 	#if VULKAN_PROFILE

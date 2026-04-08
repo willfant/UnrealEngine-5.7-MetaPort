@@ -539,10 +539,9 @@ bool ShouldWriteAlphaChannel(const FViewInfo& View, const FTonemapInputs& Inputs
 {
 	// If this is a stereo view, there's a good chance we need alpha out of the tonemapper
 	// @todo: Remove this once Oculus fix the bug in their runtime that requires alpha here.
-	//const bool bIsStereo = IStereoRendering::IsStereoEyeView(View);
-	//const bool bFormatNeedsAlphaWrite = Format == PF_R9G9B9EXP5;
-	//return (Inputs.bWriteAlphaChannel || bIsStereo || bFormatNeedsAlphaWrite);
-	return true;
+	const bool bIsStereo = IStereoRendering::IsStereoEyeView(View);
+	const bool bFormatNeedsAlphaWrite = Format == PF_R9G9B9EXP5;
+	return (Inputs.bWriteAlphaChannel || bIsStereo || bFormatNeedsAlphaWrite);
 }
 
 bool ShouldOverrideOutputLoadActionToFastClear(const FScreenPassRenderTarget& Output, bool bShouldWriteAlphaChannel)
@@ -629,7 +628,7 @@ FScreenPassTexture AddTonemapPass(FRDGBuilder& GraphBuilder, const FViewInfo& Vi
 		}
 		else if (OutputDevice == EDisplayOutputFormat::HDR_LinearNoToneCurve || OutputDevice == EDisplayOutputFormat::HDR_LinearWithToneCurve || bPreserveHalfPrecisionAlpha)
 		{
-			OutputDesc.Format = PF_B8G8R8A8;
+			OutputDesc.Format = PF_FloatRGBA;
 		}
 		else if (View.Family->RenderTarget && View.Family->RenderTarget->GetRenderTargetTexture())
 		{
@@ -639,7 +638,7 @@ FScreenPassTexture AddTonemapPass(FRDGBuilder& GraphBuilder, const FViewInfo& Vi
 		else if (bPostProcessingAlpha)
 		{
 			// Make sure there is no loss for a 10bit bit-depth using the 10bit of mantissa of halfs
-			OutputDesc.Format = PF_B8G8R8A8;
+			OutputDesc.Format = PF_FloatRGBA;
 		}
 		else 
 		{
@@ -647,15 +646,15 @@ FScreenPassTexture AddTonemapPass(FRDGBuilder& GraphBuilder, const FViewInfo& Vi
 			OutputDesc.Format = PF_A2B10G10R10;
 		}
 
-	//	if (
-	//		(OutputDesc.Format == PF_R8G8B8A8 || OutputDesc.Format == PF_B8G8R8A8) && 
-	//		!ShouldWriteAlphaChannel(View, Inputs, OutputDesc.Format) && 
-	//		GPixelFormats[PF_R8G8B8].Supported &&
-	//		!!(GPixelFormats[PF_R8G8B8].Capabilities & EPixelFormatCapabilities::RenderTarget)
-	//		)
-	//	{
-	//		OutputDesc.Format = PF_R8G8B8;
-	//	}
+		if (
+			(OutputDesc.Format == PF_R8G8B8A8 || OutputDesc.Format == PF_B8G8R8A8) && 
+			!ShouldWriteAlphaChannel(View, Inputs, OutputDesc.Format) && 
+			GPixelFormats[PF_R8G8B8].Supported &&
+			!!(GPixelFormats[PF_R8G8B8].Capabilities & EPixelFormatCapabilities::RenderTarget)
+			)
+		{
+			OutputDesc.Format = PF_R8G8B8;
+		}
 
 		Output = FScreenPassRenderTarget(
 			GraphBuilder.CreateTexture(OutputDesc, TEXT("Tonemap")),
@@ -1048,11 +1047,7 @@ FScreenPassTexture AddTonemapPass(FRDGBuilder& GraphBuilder, const FViewInfo& Vi
 		TShaderMapRef<FTonemapVS> VertexShader(View.ShaderMap);
 		TShaderMapRef<FTonemapPS> PixelShader(View.ShaderMap, DesktopPermutationVector);
 
-		// FORÇAR escrita de RGBA (enquanto depuras passthrough + tonemap)
-		const bool bForceWriteAlpha = true; // <— força
-		FRHIBlendState* BlendState = (bForceWriteAlpha || bShouldWriteAlphaChannel)
-			? FScreenPassPipelineState::FDefaultBlendState::GetRHI()
-			: TStaticBlendStateWriteMask<CW_RGB>::GetRHI();
+		FRHIBlendState* BlendState = bShouldWriteAlphaChannel ? FScreenPassPipelineState::FDefaultBlendState::GetRHI() : TStaticBlendStateWriteMask<CW_RGB>::GetRHI();
 
 		FRHIDepthStencilState* DepthStencilState = FScreenPassPipelineState::FDefaultDepthStencilState::GetRHI();
 
@@ -1215,7 +1210,7 @@ void AddMobileCustomResolvePass(FRDGBuilder & GraphBuilder, const FViewInfo & Vi
 	PassParameters->View = View.GetShaderParameters();
 	PassParameters->ColorTexture = SceneTextures.Color.Resolve;
 	PassParameters->ColorGradingLUT = ColorGradingLUT;
-	PassParameters->RenderTargets[0] = FRenderTargetBinding(ViewFamilyTexture, ERenderTargetLoadAction::ELoad);
+	PassParameters->RenderTargets[0] = FRenderTargetBinding(ViewFamilyTexture, ERenderTargetLoadAction::EClear);
 	// Need to specify multi view count for when the custom resolve pass is a separate pass and is not within the main pass.
 	PassParameters->RenderTargets.MultiViewCount = View.bIsMobileMultiViewEnabled ? 2 : 0;
 

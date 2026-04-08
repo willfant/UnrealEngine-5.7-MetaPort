@@ -75,7 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <!-- BEGIN META SECTION: Upgrade Magick package -->
-    <PackageReference Include="Magick.NET-Q16-HDRI-AnyCPU" Version="14.10.0" PrivateAssets="all" />
+    <PackageReference Include="Magick.NET-Q16-HDRI-AnyCPU" Version="14.9.1" PrivateAssets="all" />
     <!-- END META SECTION: Upgrade Magick package -->
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="MySql.Data" Version="6.10.9" PrivateAssets="all" />

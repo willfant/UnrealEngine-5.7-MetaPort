@@ -1,15 +1,44 @@
-﻿Meta repo: C:\Users\luisn\Documents\GitHub\Epic\5.6
-Upstream repo: C:\Users\luisn\Documents\GitHub\UE
-Output root: C:\MetaAuditOutput
+﻿Repo: C:\Users\luisn\Documents\GitHub\UE
+Epic 5.6.1 ref: epic-5.6.1-release
+Meta 5.6.1 ref: meta-5.6.1-release
+Upstream 5.7 ref: 5.7.4-release
 
-Patterns pesquisadas:
- - begin meta section
- - BEGIN META SECTION
- - WITH_OCULUS_BRANCH
- - OCULUS_BRANCH
+ExclusÃµes por path:
+ - Engine/Plugins/Runtime/OculusXR/
 
-Total de matches: 965
-Total de ficheiros Ãºnicos encontrados: 222
-Total copiados da Meta: 222
-Total copiados do Upstream: 222
-Total em falta no Upstream: 0
+ExclusÃµes por extensÃ£o:
+ - .dll
+ - .exe
+ - .pdb
+ - .lib
+ - .obj
+ - .uasset
+ - .umap
+ - .png
+ - .jpg
+ - .jpeg
+ - .bmp
+ - .tga
+ - .dds
+ - .ico
+ - .gif
+ - .webp
+ - .mp4
+ - .wav
+ - .mp3
+ - .zip
+ - .7z
+ - .rar
+ - .pdf
+
+Total diferenÃ§as apÃ³s filtro: 253
+Modified: 229
+AddedInMeta: 24
+DeletedInMeta: 0
+Renamed: 0
+
+Ficheiros a copiar: 253
+Copiados MetaFork: 253
+Falhas MetaFork: 0
+Copiados UpstreamUE: 229
+Missing in UpstreamUE: 24

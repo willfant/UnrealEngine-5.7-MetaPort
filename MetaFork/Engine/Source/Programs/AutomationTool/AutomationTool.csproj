@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Shared\UnrealEngine.csproj.props" />
 
   <Choose>
@@ -90,9 +90,9 @@
   <ItemGroup>
     <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.300.105" />
     <!-- BEGIN META SECTION: Upgrade Magick package -->
-    <PackageReference Include="Magick.NET-Q16-HDRI-AnyCPU" Version="14.10.0" />
+    <PackageReference Include="Magick.NET-Q16-HDRI-AnyCPU" Version="14.9.1" />
     <!-- END META SECTION: Upgrade Magick package -->
-    <PackageReference Include="Microsoft.Build" Version="17.11.48" ExcludeAssets="runtime" PrivateAssets="all">
+    <PackageReference Include="Microsoft.Build" Version="17.11.4" ExcludeAssets="runtime" PrivateAssets="all">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Build.Locator" Version="1.7.8" />
