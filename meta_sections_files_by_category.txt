@@ -1,0 +1,403 @@
+META sections -> files (full paths)
+Source: diff_stat_5.6.1_epic_vs_meta_without_oculus.patch
+
+## Add headlock support (3 files)
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD.cpp
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD.h
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Public/IOpenXRHMD.h
+
+## Add XR Cubemap Support (17 files)
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Internal/OpenXRHMD_RenderBridge.h
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Internal/OpenXRHMD_Swapchain.h
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD.cpp
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD.h
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMDModule.cpp
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD_Layer.cpp
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD_Layer.h
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD_RenderBridge.cpp
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD_Swapchain.cpp
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Public/IOpenXRHMD.h
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Public/OpenXRCore.h
+Engine/Plugins/Runtime/XRBase/Source/XRBase/Private/XRCopyTexture.cpp
+Engine/Shaders/Private/OculusShaders.usf
+Engine/Source/Runtime/D3D12RHI/Private/D3D12Texture.cpp
+Engine/Source/Runtime/RenderCore/Private/OculusShaders.cpp
+Engine/Source/Runtime/RenderCore/Public/OculusShaders.h
+Engine/Source/Runtime/Windows/D3D11RHI/Private/D3D11Texture.cpp
+
+## Android Preview GPU Scene workaround (2 files)
+Engine/Source/Runtime/Engine/Private/InstancedStaticMesh.cpp
+Engine/Source/Runtime/RenderCore/Private/RenderUtils.cpp
+
+## Bound Uniform Local Lights (16 files)
+Engine/Shaders/Private/MobileLightingCommon.ush
+Engine/Source/Runtime/Core/Private/HAL/ConsoleManager.cpp
+Engine/Source/Runtime/Engine/Classes/Engine/RendererSettings.h
+Engine/Source/Runtime/RenderCore/Private/RenderUtils.cpp
+Engine/Source/Runtime/RenderCore/Public/RenderUtils.h
+Engine/Source/Runtime/Renderer/Private/BasePassRendering.h
+Engine/Source/Runtime/Renderer/Private/EditorPrimitivesRendering.cpp
+Engine/Source/Runtime/Renderer/Private/LightGridInjection.cpp
+Engine/Source/Runtime/Renderer/Private/MobileBasePass.cpp
+Engine/Source/Runtime/Renderer/Private/MobileBasePassRendering.h
+Engine/Source/Runtime/Renderer/Private/MobileShadingRenderer.cpp
+Engine/Source/Runtime/Renderer/Private/RendererScene.cpp
+Engine/Source/Runtime/Renderer/Private/SceneCore.cpp
+Engine/Source/Runtime/Renderer/Private/SceneRendering.h
+Engine/Source/Runtime/Renderer/Private/SkyPassRendering.cpp
+Engine/Source/Runtime/Renderer/Public/MeshDrawShaderBindings.h
+
+## Bypass gradle packaging fix (1 files)
+Engine/Source/Programs/UnrealBuildTool/Platform/Android/UEDeployAndroid.cs
+
+## Canvas/StereoLayer Creation When No Debug Text (1 files)
+Engine/Source/Runtime/Engine/Private/UnrealEngine.cpp
+
+## Cook on the fly PSO crash (1 files)
+Engine/Source/Runtime/VulkanRHI/Private/VulkanChunkedPipelineCache.cpp
+
+## CreateHandTracker Hooks (3 files)
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Public/IOpenXRExtensionPlugin.h
+Engine/Plugins/Runtime/OpenXRHandTracking/Source/OpenXRHandTracking/Private/OpenXRHandTracking.cpp
+Engine/Plugins/Runtime/OpenXRHandTracking/Source/OpenXRHandTracking/Private/OpenXRHandTracking.h
+
+## Debug Primitive Multiview Rendering (6 files)
+Engine/Shaders/Private/PostProcessCompositePrimitives.usf
+Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessCompositeDebugPrimitives.cpp
+Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessCompositePrimitivesCommon.cpp
+Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessCompositePrimitivesCommon.h
+Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessTonemap.cpp
+Engine/Source/Runtime/Renderer/Private/SceneTextures.cpp
+
+## Decal Rendering VS Compute Reduction (5 files)
+Engine/Shaders/Private/DeferredDecal.usf
+Engine/Source/Runtime/Renderer/Private/CompositionLighting/PostProcessDeferredDecals.cpp
+Engine/Source/Runtime/Renderer/Private/DecalRenderingShared.cpp
+Engine/Source/Runtime/Renderer/Private/DecalRenderingShared.h
+Engine/Source/Runtime/Renderer/Private/MobileDecalRendering.cpp
+
+## Disable Orientation Polling (1 files)
+Engine/Source/Runtime/ApplicationCore/Private/Android/AndroidApplication.cpp
+
+## Dynamic Resolution (2 files)
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD.cpp
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Public/IOpenXRExtensionPlugin.h
+
+## Emulated Uniform Buffers (19 files)
+Engine/Source/Developer/VulkanShaderFormat/Private/SpirVShaderCompiler.inl
+Engine/Source/Developer/VulkanShaderFormat/Private/VulkanShaderFormat.cpp
+Engine/Source/Developer/VulkanShaderFormat/VulkanShaderFormat.Build.cs
+Engine/Source/Runtime/Core/Private/HAL/ConsoleManager.cpp
+Engine/Source/Runtime/Engine/Classes/Engine/RendererSettings.h
+Engine/Source/Runtime/Engine/Private/RendererSettings.cpp
+Engine/Source/Runtime/Engine/Private/ShaderCompiler/ShaderCompiler.cpp
+Engine/Source/Runtime/RenderCore/Private/RenderUtils.cpp
+Engine/Source/Runtime/RenderCore/Private/Shader.cpp
+Engine/Source/Runtime/VulkanRHI/Private/VulkanCommands.cpp
+Engine/Source/Runtime/VulkanRHI/Private/VulkanDynamicRHI.h
+Engine/Source/Runtime/VulkanRHI/Private/VulkanPendingState.h
+Engine/Source/Runtime/VulkanRHI/Private/VulkanPipelineState.h
+Engine/Source/Runtime/VulkanRHI/Private/VulkanRHI.cpp
+Engine/Source/Runtime/VulkanRHI/Private/VulkanRHIPrivate.h
+Engine/Source/Runtime/VulkanRHI/Private/VulkanRayTracing.cpp
+Engine/Source/Runtime/VulkanRHI/Private/VulkanResources.h
+Engine/Source/Runtime/VulkanRHI/Private/VulkanUniformBuffer.cpp
+Engine/Source/Runtime/VulkanRHI/Public/VulkanShaderResources.h
+
+## Enable Shading Rate Attachment in Tonemap Subpass (1 files)
+Engine/Source/Runtime/VulkanRHI/Private/VulkanRenderpass.h
+
+## Far Culling Distance (4 files)
+Engine/Source/Runtime/Engine/Private/LocalPlayer.cpp
+Engine/Source/Runtime/Engine/Private/SceneView.cpp
+Engine/Source/Runtime/Engine/Public/SceneView.h
+Engine/Source/Runtime/Renderer/Private/SceneVisibility.cpp
+
+## Fix activity hang when application is deployed while screen is locked (1 files)
+Engine/Build/Android/Java/src/com/epicgames/unreal/GameActivity.java.template
+
+## Fix Multiview Queries (7 files)
+Engine/Source/Runtime/VulkanRHI/Private/VulkanCommandBuffer.cpp
+Engine/Source/Runtime/VulkanRHI/Private/VulkanCommandBuffer.h
+Engine/Source/Runtime/VulkanRHI/Private/VulkanContext.h
+Engine/Source/Runtime/VulkanRHI/Private/VulkanQuery.cpp
+Engine/Source/Runtime/VulkanRHI/Private/VulkanQuery.h
+Engine/Source/Runtime/VulkanRHI/Private/VulkanRenderTarget.cpp
+Engine/Source/Runtime/VulkanRHI/Private/VulkanSubmission.cpp
+
+## GPU Occlusion Query Optimizations (3 files)
+Engine/Source/Runtime/Renderer/Private/SceneOcclusion.cpp
+Engine/Source/Runtime/Renderer/Private/SceneRendering.cpp
+Engine/Source/Runtime/Renderer/Private/SceneVisibility.cpp
+
+## HDR FDM (6 files)
+Engine/Source/Runtime/Renderer/Internal/SceneTextures.h
+Engine/Source/Runtime/Renderer/Private/MobileShadingRenderer.cpp
+Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessMobile.h
+Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessTonemap.h
+Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessing.cpp
+Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessing.h
+
+## Iterative Cook-on-the-Fly (3 files)
+Engine/Source/Programs/AutomationTool/Android/AndroidPlatform.Automation.cs
+Engine/Source/Programs/AutomationTool/AutomationUtils/ProjectParams.cs
+Engine/Source/Programs/UnrealBuildTool/Platform/Android/UEDeployAndroid.cs
+
+## LDR Tonemap Subpass (1 files)
+Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessTonemap.cpp
+
+## LDR Tonemap Subpass + 5.5 bMultiViewRendering does not always use TonemapSubpass (aka LDR w/o tonemap ). so checking IsMobileHDR() instead (1 files)
+Engine/Source/Runtime/Engine/Private/SceneUtils.cpp
+
+## LightGrid LightDataUBO (11 files)
+Engine/Shaders/Private/LightGridCommon.ush
+Engine/Source/Runtime/Core/Private/HAL/ConsoleManager.cpp
+Engine/Source/Runtime/Engine/Classes/Engine/RendererSettings.h
+Engine/Source/Runtime/RenderCore/Private/RenderUtils.cpp
+Engine/Source/Runtime/RenderCore/Private/Shader.cpp
+Engine/Source/Runtime/RenderCore/Public/RenderUtils.h
+Engine/Source/Runtime/Renderer/Private/LightGridInjection.cpp
+Engine/Source/Runtime/Renderer/Private/MobileBasePassRendering.cpp
+Engine/Source/Runtime/Renderer/Private/MobileBasePassRendering.h
+Engine/Source/Runtime/Renderer/Private/MobileShadingRenderer.cpp
+Engine/Source/Runtime/Renderer/Private/SceneRendering.h
+
+## LightGrid NOLightGridIfNoLight (1 files)
+Engine/Source/Runtime/Renderer/Private/LightGridInjection.cpp
+
+## Meta Quest Android device support (1 files)
+Engine/Source/Developer/Android/AndroidPlatformEditor/Private/AndroidTargetSettingsCustomization.cpp
+
+## Mobile Deferred Multiview (1 files)
+Engine/Source/Runtime/Renderer/Private/MobileShadingRenderer.cpp
+
+## Mobile HDR FDM (2 files)
+Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessMobile.cpp
+Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessTonemap.cpp
+
+## Multi-View Per View Viewports (5 files)
+Engine/Source/Runtime/RenderCore/Public/PixelShaderUtils.h
+Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessCompositeDebugPrimitives.cpp
+Engine/Source/Runtime/Renderer/Public/ScreenPass.h
+Engine/Source/Runtime/VulkanRHI/Private/VulkanPipeline.cpp
+Engine/Source/Runtime/VulkanRHI/Private/VulkanPipeline.h
+
+## Multi-View Per View Viewports / Render Areas (30 files)
+Engine/Source/Runtime/Engine/Public/CanvasRender.h
+Engine/Source/Runtime/Engine/Public/StereoRendering.h
+Engine/Source/Runtime/RHI/Public/RHICommandList.h
+Engine/Source/Runtime/RHI/Public/RHICommandListCommandExecutes.inl
+Engine/Source/Runtime/RHI/Public/RHIContext.h
+Engine/Source/Runtime/RHI/Public/RHIGlobals.h
+Engine/Source/Runtime/RHI/Public/RHIResources.h
+Engine/Source/Runtime/RHI/Public/RHIValidationContext.h
+Engine/Source/Runtime/RenderCore/Private/RenderGraphPass.cpp
+Engine/Source/Runtime/RenderCore/Public/ShaderParameterMacros.h
+Engine/Source/Runtime/Renderer/Private/MobileBasePassRendering.cpp
+Engine/Source/Runtime/Renderer/Private/MobileDecalRendering.cpp
+Engine/Source/Runtime/Renderer/Private/MobileShadingRenderer.cpp
+Engine/Source/Runtime/Renderer/Private/MobileTranslucentRendering.cpp
+Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessMobile.cpp
+Engine/Source/Runtime/Renderer/Private/SceneOcclusion.cpp
+Engine/Source/Runtime/Renderer/Private/SceneRendering.cpp
+Engine/Source/Runtime/Renderer/Private/SceneRendering.h
+Engine/Source/Runtime/Renderer/Private/ShadowRendering.cpp
+Engine/Source/Runtime/VulkanRHI/Private/VulkanCommandBuffer.cpp
+Engine/Source/Runtime/VulkanRHI/Private/VulkanCommandBuffer.h
+Engine/Source/Runtime/VulkanRHI/Private/VulkanContext.h
+Engine/Source/Runtime/VulkanRHI/Private/VulkanDevice.h
+Engine/Source/Runtime/VulkanRHI/Private/VulkanExtensions.cpp
+Engine/Source/Runtime/VulkanRHI/Private/VulkanPendingState.h
+Engine/Source/Runtime/VulkanRHI/Private/VulkanPipeline.cpp
+Engine/Source/Runtime/VulkanRHI/Private/VulkanRHI.cpp
+Engine/Source/Runtime/VulkanRHI/Private/VulkanRenderpass.cpp
+Engine/Source/Runtime/VulkanRHI/Private/VulkanViewport.cpp
+Engine/Source/Runtime/VulkanRHI/Public/VulkanConfiguration.h
+
+## Multiview Debug Primitives (5 files)
+Engine/Shaders/Private/SimpleElementVertexShader.usf
+Engine/Source/Runtime/Engine/Private/BatchedElements.cpp
+Engine/Source/Runtime/Engine/Private/CubemapUnwrapUtils.cpp
+Engine/Source/Runtime/Engine/Private/SimpleElementShaders.cpp
+Engine/Source/Runtime/Engine/Public/SimpleElementShaders.h
+
+## OpenXR AppSpaceWarp (10 files)
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD.cpp
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD.h
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Public/IOpenXRExtensionPlugin.h
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Public/IOpenXRHMD.h
+Engine/Source/Runtime/Engine/Private/SceneView.cpp
+Engine/Source/Runtime/Engine/Public/SceneView.h
+Engine/Source/Runtime/Engine/Public/StereoRenderTargetManager.h
+Engine/Source/Runtime/Renderer/Private/MobileShadingRenderer.cpp
+Engine/Source/Runtime/Renderer/Private/SceneRendering.h
+Engine/Source/Runtime/Renderer/Private/SceneTextures.cpp
+
+## OpenXR LDR Tonemap color space fix (2 files)
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD.cpp
+Engine/Plugins/Runtime/XRBase/Source/XRBase/Private/XRCopyTexture.cpp
+
+## OpenXR MultiPlayer (2 files)
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD.cpp
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Public/IOpenXRExtensionPlugin.h
+
+## OpenXR Native Environment Depth (5 files)
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD.cpp
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD.h
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Public/IOpenXRExtensionPlugin.h
+Engine/Source/Runtime/HeadMountedDisplay/Public/IHeadMountedDisplay.h
+Engine/Source/Runtime/HeadMountedDisplay/Public/IXRTrackingSystem.h
+
+## OpenXR Native Passthrough threading improvement (1 files)
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Public/IOpenXRExtensionPlugin.h
+
+## OpenXR Passthrough over Link (4 files)
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Internal/OpenXRHMD_Swapchain.h
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD.cpp
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD.h
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Public/IOpenXRExtensionPlugin.h
+
+## Perfetto support (3 files)
+Engine/Source/Runtime/Core/Core.Build.cs
+Engine/Source/Runtime/Core/Private/Android/AndroidPlatformMisc.cpp
+Engine/Source/Runtime/Core/Public/Android/AndroidPlatformMisc.h
+
+## PORT PICO LateLatching (15 files)
+Engine/Plugins/Runtime/XRBase/Source/XRBase/Private/DefaultXRCamera.cpp
+Engine/Plugins/Runtime/XRBase/Source/XRBase/Public/DefaultXRCamera.h
+Engine/Source/Runtime/Engine/Private/SceneView.cpp
+Engine/Source/Runtime/Engine/Public/SceneView.h
+Engine/Source/Runtime/Engine/Public/SceneViewExtension.h
+Engine/Source/Runtime/HeadMountedDisplay/Private/LateUpdateManager.cpp
+Engine/Source/Runtime/HeadMountedDisplay/Private/MotionControllerComponent.cpp
+Engine/Source/Runtime/HeadMountedDisplay/Public/IXRTrackingSystem.h
+Engine/Source/Runtime/HeadMountedDisplay/Public/MotionControllerComponent.h
+Engine/Source/Runtime/RenderCore/Private/RenderGraphBuilder.cpp
+Engine/Source/Runtime/RenderCore/Public/RenderGraphBuilder.h
+Engine/Source/Runtime/RenderCore/Public/RenderGraphDefinitions.h
+Engine/Source/Runtime/Renderer/Private/MobileShadingRenderer.cpp
+Engine/Source/Runtime/Renderer/Private/SceneRendering.cpp
+Engine/Source/Runtime/Renderer/Private/SceneRendering.h
+
+## Quest Device ID Support (1 files)
+Engine/Plugins/Online/OnlineSubsystemEOS/Source/OnlineSubsystemEOS/Private/UserManagerEOS.cpp
+
+## Read additional member to allow plugins (2 files)
+Engine/Source/Programs/UnrealBuildTool/System/PluginReferenceDescriptor.cs
+Engine/Source/Runtime/Projects/Private/PluginReferenceDescriptor.cpp
+
+## Remove more permissions that don't relate to Quest apps (1 files)
+Engine/Source/Programs/UnrealBuildTool/Platform/Android/UEDeployAndroid.cs
+
+## SceneDepth capture fix (2 files)
+Engine/Source/Runtime/Renderer/Private/MobileShadingRenderer.cpp
+Engine/Source/Runtime/Renderer/Private/SceneTextures.cpp
+
+## Software Occlusion (17 files)
+Engine/Source/Runtime/Engine/Classes/Engine/AssetUserData.h
+Engine/Source/Runtime/Engine/Classes/Engine/InstancedStaticMesh.h
+Engine/Source/Runtime/Engine/Classes/Engine/RendererSettings.h
+Engine/Source/Runtime/Engine/Private/InstancedStaticMesh.cpp
+Engine/Source/Runtime/Engine/Private/SkeletalMesh.cpp
+Engine/Source/Runtime/Engine/Private/SkeletalMeshSceneProxy.cpp
+Engine/Source/Runtime/Engine/Private/StaticMesh.cpp
+Engine/Source/Runtime/Engine/Private/StaticMeshSceneProxy.cpp
+Engine/Source/Runtime/Engine/Public/PrimitiveSceneProxy.h
+Engine/Source/Runtime/Engine/Public/SkeletalMeshSceneProxy.h
+Engine/Source/Runtime/Engine/Public/StaticMeshSceneProxy.h
+Engine/Source/Runtime/Renderer/Private/MobileShadingRenderer.cpp
+Engine/Source/Runtime/Renderer/Private/RendererScene.cpp
+Engine/Source/Runtime/Renderer/Private/SceneOcclusion.cpp
+Engine/Source/Runtime/Renderer/Private/ScenePrivate.h
+Engine/Source/Runtime/Renderer/Private/SceneRendering.cpp
+Engine/Source/Runtime/Renderer/Private/SceneVisibility.cpp
+
+## Stereo Render Target Size (10 files)
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD.cpp
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD.h
+Engine/Plugins/Runtime/XRBase/Source/XRBase/Private/XRRenderTargetManager.cpp
+Engine/Plugins/Runtime/XRBase/Source/XRBase/Public/XRRenderTargetManager.h
+Engine/Plugins/Runtime/nDisplay/Source/DisplayCluster/Private/Render/Device/DisplayClusterDeviceBase.cpp
+Engine/Plugins/Runtime/nDisplay/Source/DisplayCluster/Private/Render/Device/DisplayClusterDeviceBase.h
+Engine/Source/Runtime/Engine/Private/Slate/SceneViewport.cpp
+Engine/Source/Runtime/Engine/Private/UnrealEngine.cpp
+Engine/Source/Runtime/Engine/Public/StereoRenderTargetManager.h
+Engine/Source/Runtime/Renderer/Private/SceneTextures.cpp
+
+## Subsampled Layout Fix (1 files)
+Engine/Source/Runtime/Renderer/Private/SceneRendering.cpp
+
+## Toggle Depth at Runtime (1 files)
+Engine/Plugins/Runtime/OpenXR/Source/OpenXRHMD/Private/OpenXRHMD.cpp
+
+## Tonemap Subpass / Mobile HDR condition fix (1 files)
+Engine/Source/Runtime/Engine/Private/SceneUtils.cpp
+
+## Tonemap Subpass Depth Resolve (4 files)
+Engine/Shaders/Private/PostProcessTonemap.usf
+Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessTonemap.cpp
+Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessTonemap.h
+Engine/Source/Runtime/VulkanRHI/Private/VulkanRenderpass.h
+
+## Tonemap Subpass Depth shader resolve (2 files)
+Engine/Source/Runtime/Renderer/Private/MobileShadingRenderer.cpp
+Engine/Source/Runtime/VulkanRHI/Private/VulkanRenderTarget.cpp
+
+## Upgrade Magick package (3 files)
+Engine/Source/Programs/AutomationTool/AutomationTool.csproj
+Engine/Source/Programs/AutomationTool/AutomationUtils/AutomationUtils.Automation.csproj
+Engine/Source/Programs/AutomationTool/Gauntlet/Gauntlet.Automation.csproj
+
+## ViewAspects (2 files)
+Engine/Source/Runtime/Renderer/Private/CompositionLighting/PostProcessDeferredDecals.cpp
+Engine/Source/Runtime/Renderer/Private/PostProcess/PostProcessMobile.cpp
+
+## VR MultiPlayer (4 files)
+Engine/Source/Editor/UnrealEd/Classes/Settings/LevelEditorPlaySettings.h
+Engine/Source/Editor/UnrealEd/Private/PlayLevel.cpp
+Engine/Source/Editor/UnrealEd/Private/PlayLevelNewProcess.cpp
+Engine/Source/Runtime/Engine/Private/GameEngine.cpp
+
+## VR ScreenPercentage Fix (1 files)
+Engine/Source/Runtime/Engine/Private/LegacyScreenPercentageDriver.cpp
+
+## XR Soft Occlusions (32 files)
+Engine/Config/ConfigRedirects.ini
+Engine/Shaders/Private/BasePassPixelShader.usf
+Engine/Shaders/Private/MaterialTemplate.ush
+Engine/Shaders/Private/MobileBasePassPixelShader.usf
+Engine/Shaders/Private/SceneTexturesCommon.ush
+Engine/Source/Runtime/Core/Private/HAL/ConsoleManager.cpp
+Engine/Source/Runtime/Engine/Classes/Engine/RendererSettings.h
+Engine/Source/Runtime/Engine/Private/Materials/HLSLMaterialTranslator.cpp
+Engine/Source/Runtime/Engine/Private/Materials/HLSLMaterialTranslator.h
+Engine/Source/Runtime/Engine/Private/Materials/Material.cpp
+Engine/Source/Runtime/Engine/Private/Materials/MaterialExpressions.cpp
+Engine/Source/Runtime/Engine/Private/Materials/MaterialShared.cpp
+Engine/Source/Runtime/Engine/Public/MaterialCompiler.h
+Engine/Source/Runtime/Engine/Public/MaterialShared.h
+Engine/Source/Runtime/Engine/Public/Materials/Material.h
+Engine/Source/Runtime/Engine/Public/SceneInterface.h
+Engine/Source/Runtime/Engine/Public/StereoRenderTargetManager.h
+Engine/Source/Runtime/Renderer/Internal/SceneTextures.h
+Engine/Source/Runtime/Renderer/Private/BasePassRendering.cpp
+Engine/Source/Runtime/Renderer/Private/BasePassRendering.h
+Engine/Source/Runtime/Renderer/Private/DebugViewModeRendering.cpp
+Engine/Source/Runtime/Renderer/Private/EditorPrimitivesRendering.cpp
+Engine/Source/Runtime/Renderer/Private/MobileBasePass.cpp
+Engine/Source/Runtime/Renderer/Private/MobileBasePassRendering.cpp
+Engine/Source/Runtime/Renderer/Private/MobileBasePassRendering.h
+Engine/Source/Runtime/Renderer/Private/MobileShadingRenderer.cpp
+Engine/Source/Runtime/Renderer/Private/RendererScene.cpp
+Engine/Source/Runtime/Renderer/Private/ScenePrivate.h
+Engine/Source/Runtime/Renderer/Private/SceneTextures.cpp
+Engine/Source/Runtime/Renderer/Private/SingleLayerWaterRendering.cpp
+Engine/Source/Runtime/Renderer/Private/SkyPassRendering.cpp
+Engine/Source/Runtime/Renderer/Private/WaterInfoTextureRendering.cpp
+
+## XR Soft Occlusions + Bound Uniform Local Lights (4 files)
+Engine/Source/Runtime/Renderer/Private/DebugViewModeRendering.cpp
+Engine/Source/Runtime/Renderer/Private/MobileBasePass.cpp
+Engine/Source/Runtime/Renderer/Private/MobileBasePassRendering.cpp
+Engine/Source/Runtime/Renderer/Private/MobileBasePassRendering.h
+
