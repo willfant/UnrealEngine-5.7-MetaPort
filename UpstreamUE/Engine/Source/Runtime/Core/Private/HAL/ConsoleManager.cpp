@@ -3771,6 +3771,15 @@ static TAutoConsoleVariable<int32> CVarTranslucentSortPolicy(
 		 "2: Sort based on the projection onto a fixed axis. (best for 2D games)"),
 	ECVF_RenderThreadSafe);
 
+// BEGIN META SECTION - XR Soft Occlusions
+static TAutoConsoleVariable<int32> CVarXRSoftOcclusionsPermutation(
+	TEXT("r.XRSoftOcclusionsPermutation"),
+	0,
+	TEXT("0: Don't generate soft occlusions permutations. (default)\n"
+		"1: Generate soft occlusions permutation."),
+	ECVF_RenderThreadSafe | ECVF_ReadOnly);
+// END META SECTION - XR Soft Occlusions
+
 static TAutoConsoleVariable<int32> CVarMobileHDR(
 	TEXT("r.MobileHDR"),
 	1,

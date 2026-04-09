@@ -10,6 +10,13 @@
 #include "DefaultSpectatorScreenController.h"
 #include "UObject/SoftObjectPath.h"
 #include "GenericPlatform/IInputInterface.h"
+// BEGIN META SECTION - OpenXR Native Passthrough threading improvement
+#include "IStereoLayers.h"
+// END META SECTION - OpenXR Native Passthrough threading improvement
+
+// BEGIN META SECTION - OpenXR AppSpaceWarp
+#include "XRSwapChain.h"
+// END META SECTION - OpenXR AppSpaceWarp
 #include <openxr/openxr.h>
 
 class FHeadMountedDisplayBase;
@@ -314,7 +321,9 @@ public:
 		return InNext;
 	}
 
-	virtual const void* OnLocateViews(XrSession InSession, XrTime InDisplayTime, const void* InNext)
+	// BEGIN META SECTION - OpenXR Native Environment Depth
+	virtual const void* OnLocateViews(XrSession InSession, XrTime InDisplayTime, XrViewConfigurationType ViewConfigurationType, const void* InNext)
+		// END META SECTION - OpenXR Native Environment Depth
 	{
 		return InNext;
 	}
@@ -396,13 +405,19 @@ public:
 	virtual void OnBeginRendering_RenderThread(XrSession InSession, FRDGBuilder& GraphBuilder)
 	{
 		PRAGMA_DISABLE_DEPRECATION_WARNINGS
-		OnBeginRendering_RenderThread(InSession);
+			OnBeginRendering_RenderThread(InSession);
 		PRAGMA_ENABLE_DEPRECATION_WARNINGS
+	}
+
+	// BEGIN META SECTION - OpenXR Native Environment Depth
+	virtual void OnBeginRenderingLate_RenderThread(XrSession InSession, FRDGBuilder& GraphBuilder)
+	{
 	}
 
 	virtual void PostBeginFrame_RHIThread(XrTime PredictedDisplayTime)
 	{
 	}
+	// END META SECTION - OpenXR Native Environment Depth
 
 	// OpenXRHMD::OnBeginRendering_RHIThread
 	virtual const void* OnBeginFrame_RHIThread(XrSession InSession, XrTime DisplayTime, const void* InNext)	
@@ -489,12 +504,48 @@ public:
 		return InNext;
 	}
 
+	// BEGIN META SECTION - OpenXR Passthrough over Link
+	virtual void FinishRenderFrame_RenderThread(FRDGBuilder& GraphBuilder)
+	{
+	}
+	// END META SECTION - OpenXR Passthrough over Link
+
+	// FOpenXRRenderBridge::Present, RHI thread
 	// FOpenXRRenderBridge::Present, RHI thread
 	virtual const void* OnEndFrame(XrSession InSession, XrTime DisplayTime, const void* InNext)
 	{
 		return InNext;
 	}
 
+	// BEGIN META SECTION - OpenXR AppSpaceWarp
+	virtual void PostEndFrame_RHIThread()
+	{
+	}
+	// END META SECTION - OpenXR AppSpaceWarp
+
+	virtual bool FindEnvironmentDepthTexture_RenderThread(
+		FTextureRHIRef& OutTexture,
+		FTextureRHIRef& OutMinMaxTexture,
+		FVector2f& OutDepthFactors,
+		FMatrix44f OutScreenToDepthMatrices[2],
+		FMatrix44f OutDepthViewProjMatrices[2])
+	{
+		return false;
+	}
+
+	virtual bool OnStartGameFrame(FWorldContext& WorldContext) { return true; }
+	virtual bool OnEndGameFrame(FWorldContext& WorldContext) { return true; }
+	virtual void PostRenderBasePassMobile_RenderThread(FRHICommandList& RHICmdList, FSceneView& InView)
+	{
+	}
+
+	virtual void PostRenderBasePassDeferred_RenderThread(
+		FRDGBuilder& GraphBuilder,
+		FSceneView& InView,
+		const FRenderTargetBindingSlots& RenderTargets,
+		TRDGUniformBufferRef<FSceneTextureUniformParameters> SceneTextures)
+	{
+	}
 	// FOpenXRInputPlugin::FOpenXRActionSet::FOpenXRActionSet
 	virtual const void* OnCreateActionSet(XrActionSetCreateInfo InCreateInfo, const void* InNext)
 	{

@@ -1,7 +1,7 @@
 ﻿Repo: C:\Users\luisn\Documents\GitHub\UE
 Epic 5.6.1 ref: epic-5.6.1-release
 Meta 5.6.1 ref: meta-5.6.1-release
-Upstream 5.7 ref: 5.7.4-release
+Upstream 5.7 ref: origin/feature/oculusxr-plugin-first
 
 ExclusÃµes por path:
  - Engine/Plugins/Runtime/OculusXR/
@@ -40,5 +40,5 @@ Renamed: 0
 Ficheiros a copiar: 253
 Copiados MetaFork: 253
 Falhas MetaFork: 0
-Copiados UpstreamUE: 229
-Missing in UpstreamUE: 24
+Copiados UpstreamUE: 234
+Missing in UpstreamUE: 19

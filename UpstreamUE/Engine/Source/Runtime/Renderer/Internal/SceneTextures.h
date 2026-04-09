@@ -149,6 +149,14 @@ struct FSceneTextures : public FMinimalSceneTextures
 	// Texture containing the screen space ambient occlusion result.
 	FRDGTextureRef ScreenSpaceAO{};
 
+	// BEGIN META SECTION - XR Soft Occlusions
+	FRDGTextureRef EnvironmentDepthTexture{};
+	FRDGTextureRef EnvironmentDepthMinMaxTexture{};
+	FVector2f DepthFactors{ -1.0f, 1.0f };
+	FMatrix44f ScreenToDepthMatrices[2]{};
+	FMatrix44f DepthViewProjMatrices[2]{};
+	// END META SECTION - XR Soft Occlusions
+
 	// Additional texture used by some debug view mode when enabled.
 	FRDGTextureRef DebugAux{};
 

@@ -134,9 +134,11 @@ bool FEditorPrimitivesBasePassMeshProcessor::ProcessMobileShadingPath(const FMes
 	TMeshProcessorShaders<
 		TMobileBasePassVSPolicyParamType<FUniformLightMapPolicy>,
 		TMobileBasePassPSPolicyParamType<FUniformLightMapPolicy>> BasePassShaders;
+	const bool bEnableXRSoftOcclusions = false;
 	if (!MobileBasePass::GetShaders(
 		NoLightmapPolicy.GetIndirectPolicy(),
 		LocalLightSetting,
+		bEnableXRSoftOcclusions,
 		Material,
 		VertexFactory->GetType(),
 		BasePassShaders.VertexShader,

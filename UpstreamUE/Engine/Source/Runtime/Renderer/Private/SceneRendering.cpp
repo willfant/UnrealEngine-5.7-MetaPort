@@ -163,6 +163,22 @@ static TAutoConsoleVariable<int32> CVarCachedMeshDrawCommands(
 	TEXT("Whether to render from cached mesh draw commands (on vertex factories that support it), or to generate draw commands every frame."),
 	ECVF_RenderThreadSafe);
 
+// BEGIN META SECTION - Software Occlusion
+static TAutoConsoleVariable<int32> CVarCOVisualizeBufferXOffset(
+	TEXT("r.co.VisualizeBufferXOffset"),
+	20,
+	TEXT("X offset of visualize custom occlusion buffer window"),
+	ECVF_RenderThreadSafe
+);
+
+static TAutoConsoleVariable<int32> CVarCOVisualizeBufferYOffset(
+	TEXT("r.co.VisualizeBufferYOffset"),
+	20,
+	TEXT("Y offset of visualize custom occlusion buffer window"),
+	ECVF_RenderThreadSafe
+);
+// END META SECTION - Software Occlusion
+
 bool UseCachedMeshDrawCommands()
 {
 	return CVarCachedMeshDrawCommands.GetValueOnRenderThread() > 0;
@@ -4579,6 +4595,17 @@ void FSceneRenderer::OnRenderFinish(FRDGBuilder& GraphBuilder, FRDGTextureRef Vi
 					{
 						FXInterface->DrawDebug_RenderThread(GraphBuilder, (const FSceneView&)View, Output);
 					}
+					// BEGIN META SECTION - Software Occlusion
+					if (ViewState && ViewState->CustomOcclusion)
+					{
+						ViewState->CustomOcclusion->DebugDraw(
+							GraphBuilder,
+							View,
+							Output,
+							CVarCOVisualizeBufferXOffset.GetValueOnAnyThread(),
+							CVarCOVisualizeBufferYOffset.GetValueOnAnyThread());
+					}
+					// END META SECTION - Software Occlusion
 				}
 			}
 		}

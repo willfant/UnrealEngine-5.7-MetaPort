@@ -114,9 +114,12 @@ bool FSkyPassMeshProcessor::Process(
 			TMobileBasePassVSPolicyParamType<LightMapPolicyType>,
 			TMobileBasePassPSPolicyParamType<LightMapPolicyType>> SkyPassShaders;
 
+		const bool bEnableXRSoftOcclusions = false;
+
 		if (!MobileBasePass::GetShaders(
 			LMP_NO_LIGHTMAP,
 			EMobileLocalLightSetting::LOCAL_LIGHTS_DISABLED,
+			bEnableXRSoftOcclusions,
 			MaterialResource,
 			VertexFactory->GetType(),
 			SkyPassShaders.VertexShader,
@@ -222,9 +225,12 @@ void FSkyPassMeshProcessor::CollectPSOInitializers(const FSceneTexturesConfig& S
 			TMobileBasePassVSPolicyParamType<LightMapPolicyType>,
 			TMobileBasePassPSPolicyParamType<LightMapPolicyType>> SkyPassShaders;
 
+		const bool bEnableXRSoftOcclusions = false;
+
 		if (MobileBasePass::GetShaders(
 			LMP_NO_LIGHTMAP,
 			EMobileLocalLightSetting::LOCAL_LIGHTS_DISABLED,
+			bEnableXRSoftOcclusions,
 			Material,
 			VertexFactoryData.VertexFactoryType,
 			SkyPassShaders.VertexShader,

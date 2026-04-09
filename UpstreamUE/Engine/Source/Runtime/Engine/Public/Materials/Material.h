@@ -1021,6 +1021,21 @@ public:
 	UPROPERTY(EditAnywhere, Category=Material, AdvancedDisplay)
 	uint8 bIsSky : 1;
 
+	// BEGIN META SECTION - XR Soft Occlusions
+	/** When true and scene soft occlusions are enabled this material can be occluded by the environment depth. Defaults to true. */
+	UPROPERTY(EditAnywhere, Category = Material, AdvancedDisplay, meta = (DisplayName = "XR Soft Occlusions"))
+	uint8 bXRSoftOcclusions : 1;
+
+	/**
+	 * A common issue with XR occlusions is depth fighting with environment when a thin virtual object is placed close/against a wall or floor.
+	 * A depth bias can be used to mitigate this and give priority to the virtual object so that it doesn't get occluded when it shouldn't.
+	 * The linear depth of the virtual object will adjusted such that "biased linear depth = linear depth - linear depth * bias" before comparing
+	 * to the depth of the environment. Use a small positive value to give a slight bias to the virtual objects.
+	 */
+	UPROPERTY(EditAnywhere, Category = Material, AdvancedDisplay, meta = (DisplayName = "XR Soft Occlusions Depth Bias"))
+	float XRSoftOcclusionsDepthBias;
+	// END META SECTION - XR Soft Occlusions
+
 	/** When true, translucent materials have fog computed for every pixel, which costs more but fixes artifacts due to low tessellation. */
 	UPROPERTY(EditAnywhere, Category=Translucency)
 	uint8 bComputeFogPerPixel : 1;

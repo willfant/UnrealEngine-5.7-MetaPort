@@ -1156,6 +1156,10 @@ void UMaterial::SetInitialValues()
 	PreshaderGap = 0;
 	bDisablePreExposureScale = false;
 	bEnableStencilTest = false;
+	// BEGIN META SECTION - XR Soft Occlusions
+	bXRSoftOcclusions = true;
+	XRSoftOcclusionsDepthBias = 0.0f;
+	// END META SECTION - XR Soft Occlusions
 	bUsedWithVolumetricCloud = false;
 	bUsedWithHeterogeneousVolumes = false;
 	bUsedWithStaticMesh = true;

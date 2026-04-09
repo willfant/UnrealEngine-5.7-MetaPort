@@ -30,6 +30,10 @@
 #include "CompositionLighting/PostProcessDeferredDecals.h"
 #include "MobileSSR.h"
 
+// BEGIN META SECTION - XR Soft Occlusions
+#include "EnvironmentDepthRendering.h"
+// END META SECTION - XR Soft Occlusions
+
 bool MobileLocalLightsBufferEnabled(const FStaticShaderPlatform Platform);
 bool MobileMergeLocalLightsInPrepassEnabled(const FStaticShaderPlatform Platform);
 bool MobileMergeLocalLightsInBasepassEnabled(const FStaticShaderPlatform Platform);
@@ -39,6 +43,14 @@ struct FMobileBasePassTextures
 	FDBufferTextures DBufferTextures = {};
 	FRDGTextureRef ScreenSpaceShadowMaskTexture = nullptr;
 	FRDGTextureRef AmbientOcclusionTexture = nullptr;
+
+	// BEGIN META SECTION - XR Soft Occlusions
+	FRDGTextureRef EnvironmentDepthTexture = nullptr;
+	FRDGTextureRef EnvironmentDepthMinMaxTexture = nullptr;
+	FVector2f DepthFactors{ -1.0f, 1.0f };
+	FMatrix44f ScreenToDepthMatrices[2]{ {}, {} };
+	FMatrix44f DepthViewProjMatrices[2]{ {}, {} };
+	// END META SECTION - XR Soft Occlusions
 };
 
 BEGIN_GLOBAL_SHADER_PARAMETER_STRUCT(FMobileBasePassUniformParameters, )
@@ -53,6 +65,11 @@ BEGIN_GLOBAL_SHADER_PARAMETER_STRUCT(FMobileBasePassUniformParameters, )
 	SHADER_PARAMETER_STRUCT(FDebugViewModeUniformParameters, DebugViewMode)
 	SHADER_PARAMETER_RDG_TEXTURE_UAV(RWTexture2D<uint>, QuadOverdraw)
 	SHADER_PARAMETER_STRUCT(FReflectionUniformParameters, ReflectionsParameters)
+
+	// BEGIN META SECTION - XR Soft Occlusions
+	SHADER_PARAMETER_STRUCT(FEnvironmentDepthUniformParameters, EnvironmentDepthParameters)
+	// END META SECTION - XR Soft Occlusions
+
 	SHADER_PARAMETER_TEXTURE(Texture2D, PreIntegratedGFTexture)
 	SHADER_PARAMETER_SAMPLER(SamplerState, PreIntegratedGFSampler)
 	SHADER_PARAMETER_RDG_BUFFER_SRV(StructuredBuffer<float4>, EyeAdaptationBuffer)
@@ -344,6 +361,7 @@ namespace MobileBasePass
 	bool GetShaders(
 		ELightMapPolicyType LightMapPolicyType,
 		EMobileLocalLightSetting LocalLightSetting,
+		bool bEnableXRSoftOcclusions,
 		const FMaterial& MaterialResource,
 		const FVertexFactoryType* VertexFactoryType,
 		TShaderRef<TMobileBasePassVSPolicyParamType<FUniformLightMapPolicy>>& VertexShader,
@@ -357,7 +375,11 @@ namespace MobileBasePass
 	void SetTranslucentRenderState(FMeshPassProcessorRenderState& DrawRenderState, const FMaterial& Material, FMaterialShadingModelField ShadingModels);
 };
 
-template< typename LightMapPolicyType, EMobileLocalLightSetting LocalLightSetting, EMobileTranslucentColorTransmittanceMode TranslucentColorTransmittanceFallback = EMobileTranslucentColorTransmittanceMode::DEFAULT>
+template<
+	typename LightMapPolicyType,
+	EMobileLocalLightSetting LocalLightSetting,
+	EMobileTranslucentColorTransmittanceMode TranslucentColorTransmittanceFallback = EMobileTranslucentColorTransmittanceMode::DEFAULT,
+	bool bEnableXRSoftOcclusions = false>
 class TMobileBasePassPS : public TMobileBasePassPSBaseType<LightMapPolicyType>
 {
 	DECLARE_SHADER_TYPE(TMobileBasePassPS,MeshMaterial);
@@ -367,6 +389,16 @@ public:
 	{		
 		// We compile the point light shader combinations based on the project settings
 		const bool bIsLit = Parameters.MaterialParameters.ShadingModels.IsLit();
+
+		// BEGIN META SECTION - XR Soft Occlusions
+		static auto* XRSoftOcclusionsPermutationCVar = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.XRSoftOcclusionsPermutation"));
+		const int32 XRSoftOcclusionsPermutation = XRSoftOcclusionsPermutationCVar->GetValueOnAnyThread();
+		if (bEnableXRSoftOcclusions && !XRSoftOcclusionsPermutation)
+		{
+			return false;
+		}
+		// END META SECTION - XR Soft Occlusions
+
 		const bool bDeferredShadingEnabled = IsMobileDeferredShadingEnabled(Parameters.Platform);
 		const bool bIsTranslucent = IsTranslucentBlendMode(Parameters.MaterialParameters);
 		const bool bIsSLW = Parameters.MaterialParameters.ShadingModels.HasShadingModel(MSM_SingleLayerWater);
@@ -409,6 +441,10 @@ public:
 		const bool bProjectSupportsNonStaticSkyLights = FReadOnlyCVARCache::EnableStationarySkylight() || !IsStaticLightingAllowed();
 		OutEnvironment.SetDefine(TEXT("ENABLE_SKY_LIGHT"), bIsLit && bForwardShading && bProjectSupportsNonStaticSkyLights);
 		OutEnvironment.SetDefine(TEXT("ENABLE_AMBIENT_OCCLUSION"), bForwardShading && IsMobileAmbientOcclusionEnabled(Parameters.Platform) ? 1u : 0u);
+
+		// BEGIN META SECTION - XR Soft Occlusions
+		OutEnvironment.SetDefine(TEXT("ENABLE_SOFT_OCCLUSIONS"), bEnableXRSoftOcclusions ? 1u : 0u);
+		// END META SECTION - XR Soft Occlusions
 		
 		FForwardLightingParameters::ModifyCompilationEnvironment(Parameters.Platform, OutEnvironment);
 		OutEnvironment.SetDefine(TEXT("ENABLE_CLUSTERED_LIGHTS"), (LocalLightSetting == EMobileLocalLightSetting::LOCAL_LIGHTS_ENABLED) ? 1u : 0u);

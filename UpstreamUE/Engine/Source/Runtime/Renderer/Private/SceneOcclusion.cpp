@@ -61,6 +61,22 @@ FAutoConsoleVariableRef CVarOcclusionCullCascadedShadowMaps(
 	ECVF_Scalability | ECVF_RenderThreadSafe
 	);
 
+// BEGIN META SECTION - Software Occlusion
+static TAutoConsoleVariable<int32> CVarMobileAllowCustomOcclusion(
+	TEXT("r.Mobile.AllowCustomOcclusion"),
+	0,
+	TEXT("Whether to allow Custom Occlusion supported by plugins. One example is Software Occlusion.\n"),
+	ECVF_RenderThreadSafe
+);
+
+static TAutoConsoleVariable<int32> CVarTestDeferredAllowCustomOcclusion(
+	TEXT("r.TestDeferred.AllowCustomOcclusion"),
+	0,
+	TEXT("Whether to support testing Custom Occlusion with deferred rendering.\n"),
+	ECVF_RenderThreadSafe
+);
+// END META SECTION - Software Occlusion
+
 static TAutoConsoleVariable<bool> CVarMobileEnableOcclusionExtraFrame(
 	TEXT("r.Mobile.EnableOcclusionExtraFrame"),
 	true,

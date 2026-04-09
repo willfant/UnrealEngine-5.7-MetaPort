@@ -459,8 +459,16 @@ public:
 		return TextureCollectionParameter(ParameterName, DefaultValue, TextureCollectionReferenceIndex);
 	}
 
-	virtual	int32 PixelDepth()=0;
+	virtual int32 PixelDepth() = 0;
 	virtual int32 SceneDepth(int32 Offset, int32 ViewportUV, bool bUseOffset) = 0;
+
+	// BEGIN META SECTION - XR Soft Occlusions
+	virtual int32 EnvironmentDepth(int32 Offset, int32 ViewportUV, bool bUseOffset)
+	{
+		return Errorf(TEXT("EnvironmentDepth not implemented for this compiler."));
+	}
+	// END META SECTION - XR Soft Occlusions
+
 	virtual int32 SceneColor(int32 Offset, int32 ViewportUV, bool bUseOffset) = 0;
 	// @param SceneTextureId of type ESceneTextureId e.g. PPI_SubsurfaceColor
 	virtual int32 SceneTextureLookup(int32 ViewportUV, uint32 SceneTextureId, bool bFiltered, bool bClamped, bool bUnused) = 0;

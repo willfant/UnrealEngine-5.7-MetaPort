@@ -64,6 +64,10 @@
 #include "SceneExtensions.h"
 #include "HeterogeneousVolumes/HeterogeneousVolumes.h"
 #include "ScenePrimitiveUpdates.h"
+// BEGIN META SECTION - Software Occlusion
+#include "ICustomOcclusion.h"
+#include "ICustomOcclusionProvider.h"
+// END META SECTION - Software Occlusion
 #include "RenderTransform.h"
 
 /** Factor by which to grow occlusion tests **/
@@ -849,6 +853,10 @@ public:
 	/** HLOD persistent fading and visibility state */
 	FHLODVisibilityState HLODVisibilityState;
 	TMap<FPrimitiveComponentId, FHLODSceneNodeVisibilityState> HLODSceneNodeVisibilityStates;
+
+	// BEGIN META SECTION - Software Occlusion
+	TUniquePtr<ICustomOcclusion> CustomOcclusion;
+	// END META SECTION - Software Occlusion
 
 	/** The current frame PreExposure */
 	float PreExposure;
@@ -3346,6 +3354,10 @@ public:
 	float GlobalDistanceFieldViewDistance;
 
 	float DynamicIndirectShadowsSelfShadowingIntensity;
+
+	// BEGIN META SECTION - XR Soft Occlusions
+	bool bEnableXRPassthroughSoftOcclusions = false;
+	// END META SECTION - XR Soft Occlusions
 
 	FSpanAllocator PersistentPrimitiveIdAllocator;
 

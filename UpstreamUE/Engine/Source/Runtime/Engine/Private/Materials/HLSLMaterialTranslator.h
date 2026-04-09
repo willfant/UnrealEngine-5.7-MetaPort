@@ -1127,6 +1127,10 @@ protected:
 	int32 GetScreenAlignedUV(int32 Offset, int32 ViewportUV, bool bUseOffset);
 
 	virtual int32 SceneDepth(int32 Offset, int32 ViewportUV, bool bUseOffset) override;
+
+	// BEGIN META SECTION - XR Soft Occlusions
+	virtual int32 EnvironmentDepth(int32 Offset, int32 ViewportUV, bool bUseOffset) override;
+	// END META SECTION - XR Soft Occlusions
 	
 	// @param SceneTextureId of type ESceneTextureId e.g. PPI_SubsurfaceColor
 	virtual int32 SceneTextureLookup(int32 ViewportUV, uint32 InSceneTextureId, bool bFiltered, bool bClamped, bool bUnused) override;

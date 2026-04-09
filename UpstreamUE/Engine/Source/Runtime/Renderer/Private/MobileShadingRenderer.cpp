@@ -80,6 +80,7 @@
 #include "ViewData.h"
 #include "DistanceFieldAmbientOcclusion.h"
 #include "DistanceFieldLightingShared.h"
+#include "Features/IModularFeatures.h"
 #include "DepthCopy.h"
 #include "SingleLayerWaterRendering.h"
 #include "PostProcess/PostProcessCompositeDebugPrimitives.h"
@@ -758,7 +759,39 @@ void FMobileSceneRenderer::InitViews(
 
 		UpdateDirectionalLightUniformBuffers(GraphBuilder, Views[0]);
 	}
+
+	// BEGIN META SECTION - Software Occlusion
+	static const auto CVarMobileAllowCustomOcclusion = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.Mobile.AllowCustomOcclusion"));
+	bool bShouldBeEnabled = CVarMobileAllowCustomOcclusion
+		&& CVarMobileAllowCustomOcclusion->GetValueOnAnyThread()
+		&& IModularFeatures::Get().IsModularFeatureAvailable(ICustomOcclusionProvider::GetModularFeatureName());
+
+	if (bShouldBeEnabled)
+	{
+		ICustomOcclusionProvider& OcclusionProvider = IModularFeatures::Get().GetModularFeature<ICustomOcclusionProvider>(ICustomOcclusionProvider::GetModularFeatureName());
+
+		for (int ViewID = 0; ViewID < Views.Num(); ViewID++)
+		{
+			if (Views[ViewID].ViewState && !Views[ViewID].ViewState->CustomOcclusion)
+			{
+				OcclusionProvider.SetupCustomOcclusion(Views[ViewID]);
+			}
+		}
+	}
+	else
+	{
+		for (int ViewID = 0; ViewID < Views.Num(); ViewID++)
+		{
+			if (Views[ViewID].ViewState && Views[ViewID].ViewState->CustomOcclusion)
+			{
+				Views[ViewID].ViewState->CustomOcclusion.Reset();
+			}
+		}
+	}
+	// END META SECTION - Software Occlusion
 }
+
+
 
 static void BeginOcclusionScope(FRDGBuilder& GraphBuilder, TArray<FViewInfo>& Views)
 {

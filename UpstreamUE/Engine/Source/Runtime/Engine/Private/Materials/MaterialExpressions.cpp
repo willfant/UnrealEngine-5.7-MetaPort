@@ -223,6 +223,7 @@
 #include "Materials/MaterialExpressionSaturate.h"
 #include "Materials/MaterialExpressionSceneColor.h"
 #include "Materials/MaterialExpressionSceneDepth.h"
+#include "Materials/MaterialExpressionEnvironmentDepth.h"
 #include "Materials/MaterialExpressionSceneDepthWithoutWater.h"
 #include "Materials/MaterialExpressionSceneTexelSize.h"
 #include "Materials/MaterialExpressionSceneTexture.h"
@@ -10413,6 +10414,81 @@ FName UMaterialExpressionSceneDepth::GetInputName(int32 InputIndex) const
 
 #endif // WITH_EDITOR
 
+// BEGIN META SECTION - XR Soft Occlusions
+///////////////////////////////////////////////////////////////////////////////
+// UMaterialExpressionEnvironmentDepth
+///////////////////////////////////////////////////////////////////////////////
+
+UMaterialExpressionEnvironmentDepth::UMaterialExpressionEnvironmentDepth(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+#if WITH_EDITORONLY_DATA
+	struct FConstructorStatics
+	{
+		FText NAME_Depth;
+		FConstructorStatics()
+			: NAME_Depth(LOCTEXT("Depth", "Depth"))
+		{
+		}
+	};
+	static FConstructorStatics ConstructorStatics;
+
+	MenuCategories.Add(ConstructorStatics.NAME_Depth);
+
+	Outputs.Reset();
+	Outputs.Add(FExpressionOutput(TEXT(""), 1, 1, 0, 0, 0));
+	bShaderInputData = true;
+#endif
+
+	ConstInput = FVector2D(0.f, 0.f);
+}
+
+#if WITH_EDITOR
+int32 UMaterialExpressionEnvironmentDepth::Compile(class FMaterialCompiler* Compiler, int32 OutputIndex)
+{
+	int32 OffsetIndex = INDEX_NONE;
+	int32 CoordinateIndex = INDEX_NONE;
+	bool bUseOffset = false;
+
+	if (InputMode == EMaterialSceneAttributeInputMode::OffsetFraction)
+	{
+		if (Input.GetTracedInput().Expression)
+		{
+			OffsetIndex = Input.Compile(Compiler);
+		}
+		else
+		{
+			OffsetIndex = Compiler->Constant2(ConstInput.X, ConstInput.Y);
+		}
+		bUseOffset = true;
+	}
+	else if (InputMode == EMaterialSceneAttributeInputMode::Coordinates)
+	{
+		if (Input.GetTracedInput().Expression)
+		{
+			CoordinateIndex = Input.Compile(Compiler);
+		}
+	}
+
+	return Compiler->EnvironmentDepth(OffsetIndex, CoordinateIndex, bUseOffset);
+}
+
+void UMaterialExpressionEnvironmentDepth::GetCaption(TArray<FString>& OutCaptions) const
+{
+	OutCaptions.Add(TEXT("Environment Depth"));
+}
+
+FName UMaterialExpressionEnvironmentDepth::GetInputName(int32 InputIndex) const
+{
+	if (InputIndex == 0)
+	{
+		FByteProperty* InputModeProperty = FindFProperty<FByteProperty>(UMaterialExpressionEnvironmentDepth::StaticClass(), "InputMode");
+		return *InputModeProperty->Enum->GetNameStringByValue((int64)InputMode.GetValue());
+	}
+	return NAME_None;
+}
+#endif // WITH_EDITOR
+// END META SECTION - XR Soft Occlusions
 
 ///////////////////////////////////////////////////////////////////////////////
 // UMaterialExpressionSceneTexture

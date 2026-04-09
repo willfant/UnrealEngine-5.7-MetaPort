@@ -351,6 +351,10 @@ FSceneViewState::FSceneViewState(ERHIFeatureLevel::Type FeatureLevel, FSceneView
 
 	bRoundRobinOcclusionEnabled = false;
 
+	// BEGIN META SECTION - Software Occlusion
+	CustomOcclusion = nullptr;
+	// END META SECTION - Software Occlusion
+
 	if (ShareOriginTarget)
 	{
 		GlobalDistanceFieldData = ShareOriginTarget->GlobalDistanceFieldData;

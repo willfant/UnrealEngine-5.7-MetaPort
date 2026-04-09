@@ -1,13 +1,8 @@
 ﻿.github/workflows/github-actions-pr-validation.yml
-Engine/Shaders/Private/EnvironmentDepthOcclusion.ush
 Engine/Source/Developer/VulkanShaderFormat/Private/VulkanSpirvOptimization.cpp
 Engine/Source/Developer/VulkanShaderFormat/Private/VulkanSpirvOptimization.h
 Engine/Source/Runtime/Engine/Classes/Engine/AssetUserRenderData.h
-Engine/Source/Runtime/Engine/Public/Materials/MaterialExpressionEnvironmentDepth.h
-Engine/Source/Runtime/Renderer/Private/EnvironmentDepthRendering.cpp
 Engine/Source/Runtime/Renderer/Private/EnvironmentDepthRendering.h
-Engine/Source/Runtime/Renderer/Public/ICustomOcclusion.h
-Engine/Source/Runtime/Renderer/Public/ICustomOcclusionProvider.h
 Engine/Source/ThirdParty/Android/perfetto/perfetto.Build.cs
 Engine/Source/ThirdParty/Android/perfetto/perfetto.cc
 Engine/Source/ThirdParty/Android/perfetto/perfetto.h

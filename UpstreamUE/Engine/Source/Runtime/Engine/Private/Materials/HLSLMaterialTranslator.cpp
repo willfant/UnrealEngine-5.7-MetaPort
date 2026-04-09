@@ -8516,6 +8516,23 @@ int32 FHLSLMaterialTranslator::SceneDepth(int32 Offset, int32 ViewportUV, bool b
 		);
 }
 
+// BEGIN META SECTION - XR Soft Occlusions
+int32 FHLSLMaterialTranslator::EnvironmentDepth(int32 Offset, int32 ViewportUV, bool bUseOffset)
+{
+	if (Offset == INDEX_NONE && bUseOffset)
+	{
+		return INDEX_NONE;
+	}
+
+	AddEstimatedTextureSample();
+
+	FString UserDepthCode(TEXT("CalcEnvironmentDepth(%s, GetViewId(Parameters))"));
+	int32 TexCoordCode = GetScreenAlignedUV(Offset, ViewportUV, bUseOffset);
+
+	return AddCodeChunk(MCT_Float, *UserDepthCode, *GetParameterCode(TexCoordCode));
+}
+// END META SECTION - XR Soft Occlusions
+
 // @param SceneTextureId of type ESceneTextureId e.g. PPI_SubsurfaceColor
 int32 FHLSLMaterialTranslator::SceneTextureLookup(int32 ViewportUV, uint32 InSceneTextureId, bool bFiltered, bool bClamped, bool bUnused)
 {

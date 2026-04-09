@@ -228,6 +228,7 @@ bool FOpenXRHMD::FVulkanExtensions::GetVulkanInstanceExtensionsRequired(TArray<c
 	return true;
 }
 
+
 bool FOpenXRHMD::FVulkanExtensions::GetVulkanDeviceExtensionsRequired(VkPhysicalDevice_T *pPhysicalDevice, TArray<const ANSICHAR*>& Out)
 {
 #ifdef XR_USE_GRAPHICS_API_VULKAN
@@ -1445,7 +1446,15 @@ void FOpenXRHMD::PreRenderViewFamily_RenderThread(FRDGBuilder& GraphBuilder, FSc
 
 void FOpenXRHMD::PostRenderViewFamily_RenderThread(FRDGBuilder& GraphBuilder, FSceneViewFamily& InViewFamily)
 {
+	
+	for (IOpenXRExtensionPlugin* Module : ExtensionPlugins)
+	{
+		Module->FinishRenderFrame_RenderThread(GraphBuilder);
+	}
+	
 	check(IsInRenderingThread());
+
+
 
 	const float NearZ = GNearClippingPlane_RenderThread / GetWorldToMetersScale();
 
@@ -3680,6 +3689,11 @@ void FOpenXRHMD::OnBeginRendering_RenderThread(FRDGBuilder& GraphBuilder, FScene
 			});
 		});
 	}
+
+	for (IOpenXRExtensionPlugin* Module : ExtensionPlugins)
+	{
+		Module->OnBeginRenderingLate_RenderThread(Session, GraphBuilder);
+	}
 }
 
 void FOpenXRHMD::LocateViews(FPipelinedFrameState& PipelineState, bool ResizeViewsArray)
@@ -3696,7 +3710,12 @@ void FOpenXRHMD::LocateViews(FPipelinedFrameState& PipelineState, bool ResizeVie
 	ViewInfo.displayTime = PipelineState.FrameState.predictedDisplayTime;
 	for (IOpenXRExtensionPlugin* Module : ExtensionPlugins)
 	{
-		ViewInfo.next = Module->OnLocateViews(Session, ViewInfo.displayTime, ViewInfo.next);
+		ViewInfo.next = Module->OnLocateViews(
+			Session,
+			ViewInfo.displayTime,
+			SelectedViewConfigurationType,
+			ViewInfo.next
+		);
 	}
 
 	XR_ENSURE(xrLocateViews(Session, &ViewInfo, &PipelineState.ViewState, 0, &ViewCount, nullptr));
@@ -3713,7 +3732,29 @@ void FOpenXRHMD::LocateViews(FPipelinedFrameState& PipelineState, bool ResizeVie
 	
 	XR_ENSURE(xrLocateViews(Session, &ViewInfo, &PipelineState.ViewState, PipelineState.Views.Num(), &ViewCount, PipelineState.Views.GetData()));
 }
+void FOpenXRHMD::PostRenderBasePassMobile_RenderThread(FRHICommandList& RHICmdList, FSceneView& InView)
+{
+	check(IsInRenderingThread());
 
+	for (IOpenXRExtensionPlugin* Module : ExtensionPlugins)
+	{
+		Module->PostRenderBasePassMobile_RenderThread(RHICmdList, InView);
+	}
+}
+
+void FOpenXRHMD::PostRenderBasePassDeferred_RenderThread(
+	FRDGBuilder& GraphBuilder,
+	FSceneView& InView,
+	const FRenderTargetBindingSlots& RenderTargets,
+	TRDGUniformBufferRef<FSceneTextureUniformParameters> SceneTextures)
+{
+	check(IsInRenderingThread());
+
+	for (IOpenXRExtensionPlugin* Module : ExtensionPlugins)
+	{
+		Module->PostRenderBasePassDeferred_RenderThread(GraphBuilder, InView, RenderTargets, SceneTextures);
+	}
+}
 void FOpenXRHMD::OnLateUpdateApplied_RenderThread(FRDGBuilder& GraphBuilder, const FTransform& NewRelativeTransform)
 {
 	FHeadMountedDisplayBase::OnLateUpdateApplied_RenderThread(GraphBuilder, NewRelativeTransform);
@@ -4058,6 +4099,11 @@ bool FOpenXRHMD::OnStartGameFrame(FWorldContext& WorldContext)
 		}
 	}
 
+	for (IOpenXRExtensionPlugin* Module : ExtensionPlugins)
+	{
+		Module->OnStartGameFrame(WorldContext);
+	}
+
 	GetARCompositionComponent()->StartARGameFrame(WorldContext);
 
 	// TODO: We could do this earlier in the pipeline and allow simulation to run one frame ahead of the render thread.
@@ -4069,6 +4115,46 @@ bool FOpenXRHMD::OnStartGameFrame(FWorldContext& WorldContext)
 	UpdateDeviceLocations(true);
 
 	return true;
+}
+
+bool FOpenXRHMD::OnEndGameFrame(FWorldContext& WorldContext)
+{
+	for (IOpenXRExtensionPlugin* Module : ExtensionPlugins)
+	{
+		Module->OnEndGameFrame(WorldContext);
+	}
+
+	return true;
+}
+
+bool FOpenXRHMD::FindEnvironmentDepthTexture_RenderThread(
+	FTextureRHIRef& OutTexture,
+	FTextureRHIRef& OutMinMaxTexture,
+	FVector2f& OutDepthFactors,
+	FMatrix44f OutScreenToDepthMatrices[2],
+	FMatrix44f OutDepthViewProjMatrices[2])
+{
+	for (IOpenXRExtensionPlugin* Module : ExtensionPlugins)
+	{
+		if (Module->FindEnvironmentDepthTexture_RenderThread(
+			OutTexture,
+			OutMinMaxTexture,
+			OutDepthFactors,
+			OutScreenToDepthMatrices,
+			OutDepthViewProjMatrices))
+		{
+			return true;
+		}
+	}
+
+	OutTexture = nullptr;
+	OutMinMaxTexture = nullptr;
+	OutDepthFactors = FVector2f(-1.0f, 1.0f);
+	OutScreenToDepthMatrices[0] = FMatrix44f::Identity;
+	OutScreenToDepthMatrices[1] = FMatrix44f::Identity;
+	OutDepthViewProjMatrices[0] = FMatrix44f::Identity;
+	OutDepthViewProjMatrices[1] = FMatrix44f::Identity;
+	return false;
 }
 
 bool FOpenXRHMD::SetColorScaleAndBias(FLinearColor ColorScale, FLinearColor ColorBias)
@@ -4421,6 +4507,11 @@ void FOpenXRHMD::OnFinishRendering_RHIThread(IRHICommandContext& RHICmdContext)
 		TRACE_BOOKMARK(TEXT("xrEndFrame: %d"), EndCount);
 		UE_LOG(LogHMD, VeryVerbose, TEXT("%s WF_%i xrEndFrame WaitCount: %i BeginCount: %i EndCount: %i"), HMDThreadString(), PipelinedFrameStateRHI.WaitCount, PipelinedFrameStateRHI.WaitCount, PipelinedFrameStateRHI.BeginCount, PipelinedFrameStateRHI.EndCount);
 		XR_ENSURE(xrEndFrame(Session, &EndInfo));
+
+		for (IOpenXRExtensionPlugin* Module : ExtensionPlugins)
+		{
+			Module->PostEndFrame_RHIThread();
+		}
 	}
 
 	bIsRendering = false;

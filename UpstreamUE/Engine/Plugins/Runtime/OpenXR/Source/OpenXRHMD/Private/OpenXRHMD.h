@@ -398,7 +398,16 @@ public:
 	virtual void OnBeginRendering_RenderThread(FRDGBuilder& GraphBuilder, FSceneViewFamily& ViewFamily) override;
 	virtual void OnBeginRendering_GameThread(FSceneViewFamily& SceneViewFamily) override;
 	virtual void OnLateUpdateApplied_RenderThread(FRDGBuilder& GraphBuilder, const FTransform& NewRelativeTransform) override;
+	virtual void PostRenderBasePassMobile_RenderThread(FRHICommandList& RHICmdList, FSceneView& InView) override;
+	virtual void PostRenderBasePassDeferred_RenderThread(FRDGBuilder& GraphBuilder, FSceneView& InView, const FRenderTargetBindingSlots& RenderTargets, TRDGUniformBufferRef<FSceneTextureUniformParameters> SceneTextures);
 	virtual bool OnStartGameFrame(FWorldContext& WorldContext) override;
+	virtual bool OnEndGameFrame(FWorldContext& WorldContext) override;
+	virtual bool FindEnvironmentDepthTexture_RenderThread(
+		FTextureRHIRef& OutTexture,
+		FTextureRHIRef& OutMinMaxTexture,
+		FVector2f& OutDepthFactors,
+		FMatrix44f OutScreenToDepthMatrices[2],
+		FMatrix44f OutDepthViewProjMatrices[2]) override;
 	virtual EHMDWornState::Type GetHMDWornState() override { return bIsReady ? EHMDWornState::Worn : EHMDWornState::NotWorn; }
 	virtual bool SetColorScaleAndBias(FLinearColor ColorScale, FLinearColor ColorBias);
 

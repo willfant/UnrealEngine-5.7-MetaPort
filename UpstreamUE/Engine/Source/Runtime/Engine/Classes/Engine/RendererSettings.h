@@ -332,6 +332,20 @@ class URendererSettings : public UDeveloperSettings
 		ConfigRestartRequired=true))
 	bool bMobileAllowDitheredLODTransition;
 
+	// BEGIN META SECTION - Software Occlusion
+	UPROPERTY(config, EditAnywhere, Category = Mobile, meta = (
+		ConsoleVariable = "r.Mobile.AllowCustomOcclusion", DisplayName = "Support Custom Occlusion Culling",
+		ToolTip = "Whether to support 'Custom Occlusion Culling' on mobile platforms. This will package occluder information and enable potential Custom Occlusion Culling supported by plugins.",
+		ConfigRestartRequired = false))
+	uint32 bMobileAllowCustomOcclusionCulling : 1;
+
+	UPROPERTY(config, EditAnywhere, Category = Mobile, meta = (
+		ConsoleVariable = "r.TestDeferred.AllowCustomOcclusion", DisplayName = "Support Testing Custom Occlusion Culling with Deferred Pipeline",
+		ToolTip = "Whether to support testing 'Custom Occlusion Culling' on PC.",
+		ConfigRestartRequired = false))
+	uint32 bTestDeferredAllowCustomOcclusionCulling : 1;
+	// END META SECTION - Software Occlusion
+
 	UPROPERTY(config, EditAnywhere, Category = Mobile, meta = (
 		EditCondition = "bVirtualTextures",
 		ConsoleVariable = "r.Mobile.VirtualTextures", DisplayName = "Enable virtual texture support on Mobile",
@@ -1128,6 +1142,14 @@ class URendererSettings : public UDeveloperSettings
 		ToolTip = "Enable round-robin scheduling of occlusion queries for VR.",
 		ConfigRestartRequired = false))
 	uint32 bRoundRobinOcclusion : 1;
+
+	// BEGIN META SECTION - XR Soft Occlusions
+	UPROPERTY(config, EditAnywhere, Category = VR, meta = (
+		ConsoleVariable = "r.XRSoftOcclusionsPermutation", DisplayName = "Support XR Soft Occlusions",
+		ToolTip = "Enable this to compile the shader variations needed to enable mixed reality passthrough soft occlusions at runtime.",
+		ConfigRestartRequired = true))
+	uint32 bSupportsXRSoftOcclusions : 1;
+	// END META SECTION - XR Soft Occlusions
 
 	UPROPERTY(config, EditAnywhere, Category = "Mesh Streaming", meta = (
 		ConsoleVariable="r.MeshStreaming",DisplayName="Mesh Streaming",

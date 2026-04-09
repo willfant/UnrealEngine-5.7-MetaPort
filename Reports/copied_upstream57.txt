@@ -34,6 +34,7 @@ Engine/Plugins/Runtime/XRBase/Source/XRBase/Public/DefaultXRCamera.h
 Engine/Plugins/Runtime/XRBase/Source/XRBase/Public/XRRenderTargetManager.h
 Engine/Shaders/Private/BasePassPixelShader.usf
 Engine/Shaders/Private/DeferredDecal.usf
+Engine/Shaders/Private/EnvironmentDepthOcclusion.ush
 Engine/Shaders/Private/GpuSkinVertexFactory.ush
 Engine/Shaders/Private/LightGridCommon.ush
 Engine/Shaders/Private/LocalVertexFactory.ush
@@ -105,6 +106,7 @@ Engine/Source/Runtime/Engine/Private/UnrealEngine.cpp
 Engine/Source/Runtime/Engine/Public/CanvasRender.h
 Engine/Source/Runtime/Engine/Public/MaterialCompiler.h
 Engine/Source/Runtime/Engine/Public/Materials/Material.h
+Engine/Source/Runtime/Engine/Public/Materials/MaterialExpressionEnvironmentDepth.h
 Engine/Source/Runtime/Engine/Public/MaterialShared.h
 Engine/Source/Runtime/Engine/Public/PrimitiveSceneProxy.h
 Engine/Source/Runtime/Engine/Public/SceneInterface.h
@@ -142,6 +144,7 @@ Engine/Source/Runtime/Renderer/Private/DecalRenderingShared.cpp
 Engine/Source/Runtime/Renderer/Private/DecalRenderingShared.h
 Engine/Source/Runtime/Renderer/Private/DepthRendering.cpp
 Engine/Source/Runtime/Renderer/Private/EditorPrimitivesRendering.cpp
+Engine/Source/Runtime/Renderer/Private/EnvironmentDepthRendering.cpp
 Engine/Source/Runtime/Renderer/Private/LightGridInjection.cpp
 Engine/Source/Runtime/Renderer/Private/MobileBasePass.cpp
 Engine/Source/Runtime/Renderer/Private/MobileBasePassRendering.cpp
@@ -172,6 +175,8 @@ Engine/Source/Runtime/Renderer/Private/SkyPassRendering.cpp
 Engine/Source/Runtime/Renderer/Private/VelocityRendering.cpp
 Engine/Source/Runtime/Renderer/Private/VelocityRendering.h
 Engine/Source/Runtime/Renderer/Private/WaterInfoTextureRendering.cpp
+Engine/Source/Runtime/Renderer/Public/ICustomOcclusion.h
+Engine/Source/Runtime/Renderer/Public/ICustomOcclusionProvider.h
 Engine/Source/Runtime/Renderer/Public/MeshDrawShaderBindings.h
 Engine/Source/Runtime/Renderer/Public/ScreenPass.h
 Engine/Source/Runtime/RHI/Public/RHICommandList.h

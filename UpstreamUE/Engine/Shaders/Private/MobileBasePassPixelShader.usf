@@ -134,6 +134,12 @@
 // SUBSTRATE_TODO: Shared with BasePassPixelShader.usf
 #define MATERIAL_SUBSTRATE_OPAQUE_PRECOMPUTED_LIGHTING (MATERIAL_IS_SUBSTRATE && SUBSTRATE_ENABLED && SUBSTRATE_OPAQUE_DEFERRED)
 
+// BEGIN META SECTION - XR Soft Occlusions
+#if ENABLE_SOFT_OCCLUSIONS
+	#include "EnvironmentDepthOcclusion.ush"
+#endif
+// END META SECTION - XR Soft Occlusions
+
 #if SUBSTRATE_TRANSLUCENT_FORWARD || SUBSTRATE_FORWARD_SHADING || MATERIAL_SUBSTRATE_OPAQUE_PRECOMPUTED_LIGHTING || SUBSTRATE_MATERIAL_EXPORT_EXECUTED
 #include "/Engine/Private/Substrate/SubstrateEvaluation.ush"
 #endif
@@ -1361,6 +1367,18 @@ void Main(
 	OutColor.rgb = SafeGetOutColor(OutColor.rgb);
 #endif
 
+// BEGIN META SECTION - XR Soft Occlusions
+#if ENABLE_SOFT_OCCLUSIONS
+	uint ViewId = 0;
+#if USE_MULTI_VIEW_ID_SV
+	ViewId = MultiViewId;
+#elif USE_MULTI_VIEW_ID_INTERPOLANT
+	ViewId = BasePassInterpolants.MultiViewId;
+#endif
+	OutColor = EnvironmentDepthOcclusion(OutColor, float4(MaterialParameters.WorldPosition_CamRelative, 1.0f), ViewId);
+#endif
+// END META SECTION - XR Soft Occlusions	
+	
 #if USE_EDITOR_COMPOSITING && (MOBILE_EMULATION)
 	// Editor primitive depth testing
 	OutColor.a = 1.0;

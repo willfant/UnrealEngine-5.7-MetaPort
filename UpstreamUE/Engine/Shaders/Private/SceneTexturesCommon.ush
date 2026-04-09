@@ -283,4 +283,41 @@ float CalcSceneDepth(float2 ScreenUV)
 	return CalcSceneDepth(ScreenUV, 0);
 }
 
+
+
 #endif // SHADING_PATH_MOBILE
+
+// BEGIN META SECTION - XR Soft Occlusions
+#if SHADING_PATH_MOBILE
+
+#define EnvironmentDepthParameters MobileBasePass.EnvironmentDepthParameters
+
+	float CalcEnvironmentDepth(float2 ScreenUV, uint ViewId)
+	{
+		float4 TexCoordH = mul(
+			EnvironmentDepthParameters.ScreenToDepthMatrices[ViewId],
+			float4(ScreenUV.x, 1.0f - ScreenUV.y, 0.0f, 1.0f));
+
+		float3 TexCoord = float3(TexCoordH.x / TexCoordH.w, TexCoordH.y / TexCoordH.w, ViewId);
+
+		float RawDepth = Texture2DArraySample(
+			EnvironmentDepthParameters.EnvironmentDepthTexture,
+			EnvironmentDepthParameters.EnvironmentDepthSampler,
+			TexCoord).r;
+
+		float ConvertedDepth =
+			RawDepth * EnvironmentDepthParameters.DepthFactors.x +
+			EnvironmentDepthParameters.DepthFactors.y;
+
+		return ConvertFromDeviceZ(ConvertedDepth);
+	}
+
+#else
+
+float CalcEnvironmentDepth(float2 ScreenUV, uint ViewId)
+{
+	return SCENE_TEXTURES_DISABLED_SCENE_DEPTH_VALUE;
+}
+
+#endif
+// END META SECTION - XR Soft Occlusions

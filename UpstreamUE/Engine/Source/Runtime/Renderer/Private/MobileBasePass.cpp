@@ -129,7 +129,7 @@ void SetMobileBasePassDepthState(
 	DrawRenderState.SetStencilRef(StencilValue); 
 }
 
-template <ELightMapPolicyType Policy, EMobileLocalLightSetting LocalLightSetting>
+template <ELightMapPolicyType Policy, EMobileLocalLightSetting LocalLightSetting, bool bEnableXRSoftOcclusions>
 bool GetUniformMobileBasePassShaders(
 	const FMaterial& Material, 
 	const FVertexFactoryType* VertexFactoryType, 
@@ -148,10 +148,10 @@ bool GetUniformMobileBasePassShaders(
 	{
 	default:
 	case EMobileTranslucentColorTransmittanceMode::DEFAULT:
-		ShaderTypes.AddShaderType<TMobileBasePassPS<TUniformLightMapPolicy<Policy>, LocalLightSetting, EMobileTranslucentColorTransmittanceMode::DEFAULT>>();
+		ShaderTypes.AddShaderType<TMobileBasePassPS<TUniformLightMapPolicy<Policy>, LocalLightSetting, EMobileTranslucentColorTransmittanceMode::DEFAULT, bEnableXRSoftOcclusions>>();
 		break;
 	case EMobileTranslucentColorTransmittanceMode::SINGLE_SRC_BLENDING:
-		ShaderTypes.AddShaderType<TMobileBasePassPS<TUniformLightMapPolicy<Policy>, LocalLightSetting, EMobileTranslucentColorTransmittanceMode::SINGLE_SRC_BLENDING>>();
+		ShaderTypes.AddShaderType<TMobileBasePassPS<TUniformLightMapPolicy<Policy>, LocalLightSetting, EMobileTranslucentColorTransmittanceMode::SINGLE_SRC_BLENDING, bEnableXRSoftOcclusions>>();
 		break;
 	}
 
@@ -166,43 +166,80 @@ bool GetUniformMobileBasePassShaders(
 	return true;
 }
 
-template <EMobileLocalLightSetting LocalLightSetting>
+template <EMobileLocalLightSetting LocalLightSetting, bool bEnableXRSoftOcclusions>
 bool GetMobileBasePassShaders(
-	ELightMapPolicyType LightMapPolicyType, 
-	const FMaterial& Material, 
-	const FVertexFactoryType* VertexFactoryType, 
+	ELightMapPolicyType LightMapPolicyType,
+	const FMaterial& Material,
+	const FVertexFactoryType* VertexFactoryType,
 	EMobileTranslucentColorTransmittanceMode ColoredTransmittanceFallback,
 	TShaderRef<TMobileBasePassVSPolicyParamType<FUniformLightMapPolicy>>& VertexShader,
 	TShaderRef<TMobileBasePassPSPolicyParamType<FUniformLightMapPolicy>>& PixelShader
-	)
+)
 {
 	switch (LightMapPolicyType)
 	{
 	case LMP_NO_LIGHTMAP:
-		return GetUniformMobileBasePassShaders<LMP_NO_LIGHTMAP, LocalLightSetting>(Material, VertexFactoryType, ColoredTransmittanceFallback, VertexShader, PixelShader);
+		return GetUniformMobileBasePassShaders<LMP_NO_LIGHTMAP, LocalLightSetting, bEnableXRSoftOcclusions>(Material, VertexFactoryType, ColoredTransmittanceFallback, VertexShader, PixelShader);
 	case LMP_LQ_LIGHTMAP:
-		return GetUniformMobileBasePassShaders<LMP_LQ_LIGHTMAP, LocalLightSetting>(Material, VertexFactoryType, ColoredTransmittanceFallback, VertexShader, PixelShader);
+		return GetUniformMobileBasePassShaders<LMP_LQ_LIGHTMAP, LocalLightSetting, bEnableXRSoftOcclusions>(Material, VertexFactoryType, ColoredTransmittanceFallback, VertexShader, PixelShader);
 	case LMP_MOBILE_DISTANCE_FIELD_SHADOWS_AND_LQ_LIGHTMAP:
-		return GetUniformMobileBasePassShaders<LMP_MOBILE_DISTANCE_FIELD_SHADOWS_AND_LQ_LIGHTMAP, LocalLightSetting>(Material, VertexFactoryType, ColoredTransmittanceFallback, VertexShader, PixelShader);
+		return GetUniformMobileBasePassShaders<LMP_MOBILE_DISTANCE_FIELD_SHADOWS_AND_LQ_LIGHTMAP, LocalLightSetting, bEnableXRSoftOcclusions>(Material, VertexFactoryType, ColoredTransmittanceFallback, VertexShader, PixelShader);
 	case LMP_MOBILE_DISTANCE_FIELD_SHADOWS_LIGHTMAP_AND_CSM:
-		return GetUniformMobileBasePassShaders<LMP_MOBILE_DISTANCE_FIELD_SHADOWS_LIGHTMAP_AND_CSM, LocalLightSetting>(Material, VertexFactoryType, ColoredTransmittanceFallback, VertexShader, PixelShader);
+		return GetUniformMobileBasePassShaders<LMP_MOBILE_DISTANCE_FIELD_SHADOWS_LIGHTMAP_AND_CSM, LocalLightSetting, bEnableXRSoftOcclusions>(Material, VertexFactoryType, ColoredTransmittanceFallback, VertexShader, PixelShader);
 	case LMP_MOBILE_DIRECTIONAL_LIGHT_CSM_AND_LIGHTMAP:
-		return GetUniformMobileBasePassShaders<LMP_MOBILE_DIRECTIONAL_LIGHT_CSM_AND_LIGHTMAP, LocalLightSetting>(Material, VertexFactoryType, ColoredTransmittanceFallback, VertexShader, PixelShader);
+		return GetUniformMobileBasePassShaders<LMP_MOBILE_DIRECTIONAL_LIGHT_CSM_AND_LIGHTMAP, LocalLightSetting, bEnableXRSoftOcclusions>(Material, VertexFactoryType, ColoredTransmittanceFallback, VertexShader, PixelShader);
 	case LMP_MOBILE_DIRECTIONAL_LIGHT_AND_SH_INDIRECT:
-		return GetUniformMobileBasePassShaders<LMP_MOBILE_DIRECTIONAL_LIGHT_AND_SH_INDIRECT, LocalLightSetting>(Material, VertexFactoryType, ColoredTransmittanceFallback, VertexShader, PixelShader);
+		return GetUniformMobileBasePassShaders<LMP_MOBILE_DIRECTIONAL_LIGHT_AND_SH_INDIRECT, LocalLightSetting, bEnableXRSoftOcclusions>(Material, VertexFactoryType, ColoredTransmittanceFallback, VertexShader, PixelShader);
 	case LMP_MOBILE_DIRECTIONAL_LIGHT_CSM_AND_SH_INDIRECT:
-		return GetUniformMobileBasePassShaders<LMP_MOBILE_DIRECTIONAL_LIGHT_CSM_AND_SH_INDIRECT, LocalLightSetting>(Material, VertexFactoryType, ColoredTransmittanceFallback, VertexShader, PixelShader);
+		return GetUniformMobileBasePassShaders<LMP_MOBILE_DIRECTIONAL_LIGHT_CSM_AND_SH_INDIRECT, LocalLightSetting, bEnableXRSoftOcclusions>(Material, VertexFactoryType, ColoredTransmittanceFallback, VertexShader, PixelShader);
 	case LMP_MOBILE_DIRECTIONAL_LIGHT_CSM:
-		return GetUniformMobileBasePassShaders<LMP_MOBILE_DIRECTIONAL_LIGHT_CSM, LocalLightSetting>(Material, VertexFactoryType, ColoredTransmittanceFallback, VertexShader, PixelShader);
+		return GetUniformMobileBasePassShaders<LMP_MOBILE_DIRECTIONAL_LIGHT_CSM, LocalLightSetting, bEnableXRSoftOcclusions>(Material, VertexFactoryType, ColoredTransmittanceFallback, VertexShader, PixelShader);
 	default:										
 		check(false);
 		return true;
 	}
 }
 
+
+template <EMobileLocalLightSetting LocalLightSetting>
+bool GetMobileBasePassShaders(
+	ELightMapPolicyType LightMapPolicyType,
+	bool bEnableXRSoftOcclusions,
+	const FMaterial& Material,
+	const FVertexFactoryType* VertexFactoryType,
+	EMobileTranslucentColorTransmittanceMode ColoredTransmittanceFallback,
+	TShaderRef<TMobileBasePassVSPolicyParamType<FUniformLightMapPolicy>>& VertexShader,
+	TShaderRef<TMobileBasePassPSPolicyParamType<FUniformLightMapPolicy>>& PixelShader
+)
+{
+	if (bEnableXRSoftOcclusions)
+	{
+		return GetMobileBasePassShaders<LocalLightSetting, true>(
+			LightMapPolicyType,
+			Material,
+			VertexFactoryType,
+			ColoredTransmittanceFallback,
+			VertexShader,
+			PixelShader
+		);
+	}
+	else
+	{
+		return GetMobileBasePassShaders<LocalLightSetting, false>(
+			LightMapPolicyType,
+			Material,
+			VertexFactoryType,
+			ColoredTransmittanceFallback,
+			VertexShader,
+			PixelShader
+		);
+	}
+}
+
 bool MobileBasePass::GetShaders(
 	ELightMapPolicyType LightMapPolicyType,
 	EMobileLocalLightSetting LocalLightSetting,
+	bool bEnableXRSoftOcclusions,
 	const FMaterial& MaterialResource,
 	const FVertexFactoryType* VertexFactoryType,
 	TShaderRef<TMobileBasePassVSPolicyParamType<FUniformLightMapPolicy>>& VertexShader,
@@ -221,6 +258,7 @@ bool MobileBasePass::GetShaders(
 		{
 			return GetMobileBasePassShaders<EMobileLocalLightSetting::LOCAL_LIGHTS_DISABLED>(
 				LightMapPolicyType,
+				bEnableXRSoftOcclusions,
 				MaterialResource,
 				VertexFactoryType,
 				ColoredTransmittanceFallback,
@@ -232,6 +270,7 @@ bool MobileBasePass::GetShaders(
 		{
 			return GetMobileBasePassShaders<EMobileLocalLightSetting::LOCAL_LIGHTS_ENABLED>(
 				LightMapPolicyType,
+				bEnableXRSoftOcclusions,
 				MaterialResource,
 				VertexFactoryType,
 				ColoredTransmittanceFallback,
@@ -243,6 +282,7 @@ bool MobileBasePass::GetShaders(
 		{
 			return GetMobileBasePassShaders<EMobileLocalLightSetting::LOCAL_LIGHTS_BUFFER>(
 				LightMapPolicyType,
+				bEnableXRSoftOcclusions,
 				MaterialResource,
 				VertexFactoryType,
 				ColoredTransmittanceFallback,
@@ -863,9 +903,12 @@ bool FMobileBasePassMeshProcessor::Process(
 		}
 	}
 
+	bool bEnableXRSoftOcclusions = Scene && Scene->bEnableXRPassthroughSoftOcclusions && MaterialResource.IsXRSoftOcclusionsEnabled();
+
 	if (!MobileBasePass::GetShaders(
 		LightMapPolicyType,
 		LocalLightSetting,
+		bEnableXRSoftOcclusions,
 		MaterialResource,
 		MeshBatch.VertexFactory->GetType(),
 		BasePassShaders.VertexShader,
@@ -952,9 +995,13 @@ void FMobileBasePassMeshProcessor::CollectPSOInitializersForLMPolicy(
 		TMobileBasePassVSPolicyParamType<FUniformLightMapPolicy>,
 		TMobileBasePassPSPolicyParamType<FUniformLightMapPolicy>> BasePassShaders;
 
+
+	bool bEnableXRSoftOcclusions = Scene && Scene->bEnableXRPassthroughSoftOcclusions && MaterialResource.IsXRSoftOcclusionsEnabled();
+
 	if (!MobileBasePass::GetShaders(
 		LightMapPolicyType,
 		LocalLightSetting,
+		bEnableXRSoftOcclusions,
 		MaterialResource,
 		VertexFactoryData.VertexFactoryType,
 		BasePassShaders.VertexShader,

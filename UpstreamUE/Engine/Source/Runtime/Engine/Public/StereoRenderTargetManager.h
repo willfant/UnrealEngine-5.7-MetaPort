@@ -174,6 +174,18 @@ public:
 	 * @return							true, if texture was allocated; false, if the stereo device can't provide a texture.
 	 */
 	virtual bool GetMotionVectorDepthTexture(uint32 Index, const FIntPoint& Size, uint8 Format, uint32 NumMips, ETextureCreateFlags Flags, FTextureRHIRef& OutTexture, uint32 NumSamples = 1) { return false; }
-	
+
+	// BEGIN META SECTION - XR Soft Occlusions
+	virtual bool FindEnvironmentDepthTexture_RenderThread(
+		FTextureRHIRef& OutTexture,
+		FTextureRHIRef& OutMinMaxTexture,
+		FVector2f& OutDepthFactors,
+		FMatrix44f OutScreenToDepthMatrices[2],
+		FMatrix44f OutDepthViewProjMatrices[2])
+	{
+		return false;
+	}
+	// END META SECTION - XR Soft Occlusions
+
 	static EPixelFormat GetStereoLayerPixelFormat() { return PF_B8G8R8A8; }
 };

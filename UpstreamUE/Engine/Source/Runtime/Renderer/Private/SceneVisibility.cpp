@@ -59,6 +59,9 @@
 #include "DecalRenderingCommon.h"
 #include "CompositionLighting/PostProcessDeferredDecals.h"
 #include "DecalRenderingShared.h"
+// BEGIN META SECTION - Software Occlusion
+#include "Features/IModularFeatures.h"
+// END META SECTION - Software Occlusion
 
 bool GDistanceCullToSphereEdge = true;
 static FAutoConsoleVariableRef CVarDistanceCullToSphereEdge(
@@ -3530,6 +3533,25 @@ static int32 PrecomputedOcclusionCull(FVisibilityViewPacket& ViewPacket, FPrimit
 	return NumOccludedPrimitives;
 }
 
+// BEGIN META SECTION - Software Occlusion
+static int32 CustomOcclusionCull(FVisibilityViewPacket& ViewPacket)
+{
+	int NumOccludedPrimitives = 0;
+
+	const FScene& Scene = ViewPacket.Scene;
+	FViewInfo& View = ViewPacket.View;
+
+	if (View.ViewState && View.ViewState->CustomOcclusion)
+	{
+		NumOccludedPrimitives = View.ViewState->CustomOcclusion->Process(&Scene, View);
+		INC_DWORD_STAT_BY(STAT_CulledPrimitives, NumOccludedPrimitives);
+		return NumOccludedPrimitives;
+	}
+
+	return NumOccludedPrimitives;
+}
+// END META SECTION - Software Occlusion
+
 ///////////////////////////////////////////////////////////////////////////////
 
 FVisibilityTaskConfig::FVisibilityTaskConfig(const FScene& Scene, TConstArrayView<FViewInfo*> Views)
@@ -3703,7 +3725,8 @@ FVisibilityViewPacket::FVisibilityViewPacket(FVisibilityTaskData& InTaskData, FS
 		{
 			UpdatePrimitiveFading(Scene, View, ViewState, PrimitiveRange);
 
-			const int32 NumCulledPrimitives = PrecomputedOcclusionCull(*this, PrimitiveRange);
+			int32 NumCulledPrimitives = PrecomputedOcclusionCull(*this, PrimitiveRange);
+			NumCulledPrimitives += CustomOcclusionCull(*this);
 
 			if (OcclusionCull.ContextIfParallel)
 			{
@@ -4786,7 +4809,8 @@ void FVisibilityTaskData::ProcessRenderThreadTasks()
 		for (FVisibilityViewPacket& ViewPacket : ViewPackets)
 		{
 			SCOPED_NAMED_EVENT(OcclusionCull, FColor::Magenta);
-			const int32 NumCulledPrimitives = PrecomputedOcclusionCull(ViewPacket, PrimitiveRange);
+			int32 NumCulledPrimitives = PrecomputedOcclusionCull(ViewPacket, PrimitiveRange);
+			NumCulledPrimitives += CustomOcclusionCull(ViewPacket);
 
 			if (ViewPacket.OcclusionCull.ContextIfSerial)
 			{
@@ -5134,7 +5158,8 @@ void FSceneRenderer::PrepareViewStateForVisibility(const FSceneTexturesConfig& S
 		const bool bIsHitTesting = ViewFamily.EngineShowFlags.HitProxies;
 		// Don't test occlusion queries in collision viewmode as they can be bigger then the rendering bounds.
 		const bool bCollisionView = ViewFamily.EngineShowFlags.CollisionVisibility || ViewFamily.EngineShowFlags.CollisionPawn;
-		if (GIsHighResScreenshot || !DoOcclusionQueries() || bIsHitTesting || bCollisionView)
+		const bool bCustomOcclusion = ViewState != nullptr && View.ViewState->CustomOcclusion != nullptr;
+		if (GIsHighResScreenshot || !DoOcclusionQueries() || bIsHitTesting || bCollisionView || bCustomOcclusion)
 		{
 			View.bDisableQuerySubmissions = true;
 			View.bIgnoreExistingQueries = true;
@@ -5955,6 +5980,39 @@ void FDeferredShadingSceneRenderer::BeginInitViews(
 	}
 
 	PostVisibilityFrameSetup(TaskDatas.ILCUpdatePrim);
+
+	// BEGIN META SECTION - Software Occlusion
+	static const auto CVarMobileAllowCustomOcclusion = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.Mobile.AllowCustomOcclusion"));
+	static const auto CVarDeferredCustomOC = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("r.TestDeferred.AllowCustomOcclusion"));
+
+	bool bShouldBeEnabled = CVarDeferredCustomOC
+		&& CVarDeferredCustomOC->GetValueOnAnyThread()
+		&& CVarMobileAllowCustomOcclusion
+		&& CVarMobileAllowCustomOcclusion->GetValueOnAnyThread()
+		&& IModularFeatures::Get().IsModularFeatureAvailable(ICustomOcclusionProvider::GetModularFeatureName());
+
+	if (bShouldBeEnabled)
+	{
+		for (int ViewID = 0; ViewID < Views.Num(); ViewID++)
+		{
+			if (Views[ViewID].ViewState && !Views[ViewID].ViewState->CustomOcclusion)
+			{
+				ICustomOcclusionProvider& OcclusionProvider = IModularFeatures::Get().GetModularFeature<ICustomOcclusionProvider>(ICustomOcclusionProvider::GetModularFeatureName());
+				OcclusionProvider.SetupCustomOcclusion(Views[ViewID]);
+			}
+		}
+	}
+	else
+	{
+		for (int ViewID = 0; ViewID < Views.Num(); ViewID++)
+		{
+			if (Views[ViewID].ViewState && Views[ViewID].ViewState->CustomOcclusion)
+			{
+				Views[ViewID].ViewState->CustomOcclusion.Reset();
+			}
+		}
+	}
+	// END META SECTION - Software Occlusion
 }
 
 void FSceneRenderer::SetupSceneReflectionCaptureBuffer(FRHICommandListImmediate& RHICmdList)

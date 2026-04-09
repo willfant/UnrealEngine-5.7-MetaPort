@@ -142,6 +142,38 @@ static bool FindStereoMotionVectorTexture(FIntPoint& OutVelocityTextureSize, FTe
 	return false;
 }
 
+// BEGIN META SECTION - XR Soft Occlusions
+static bool FindEnvironmentDepthTexture_RenderThread(
+	FTextureRHIRef& OutTexture,
+	FTextureRHIRef& OutMinMaxTexture,
+	FVector2f& OutDepthFactors,
+	FMatrix44f OutScreenToDepthMatrices[2],
+	FMatrix44f OutDepthViewProjMatrices[2])
+{
+	if (IStereoRenderTargetManager* StereoRenderTargetManager = FindStereoRenderTargetManager())
+	{
+		if (StereoRenderTargetManager->FindEnvironmentDepthTexture_RenderThread(
+			OutTexture,
+			OutMinMaxTexture,
+			OutDepthFactors,
+			OutScreenToDepthMatrices,
+			OutDepthViewProjMatrices))
+		{
+			return true;
+		}
+	}
+
+	OutTexture = nullptr;
+	OutMinMaxTexture = nullptr;
+	OutDepthFactors = FVector2f(-1.0f, 1.0f);
+	OutScreenToDepthMatrices[0] = FMatrix44f::Identity;
+	OutScreenToDepthMatrices[1] = FMatrix44f::Identity;
+	OutDepthViewProjMatrices[0] = FMatrix44f::Identity;
+	OutDepthViewProjMatrices[1] = FMatrix44f::Identity;
+	return false;
+}
+// END META SECTION - XR Soft Occlusions
+
 /** Helper class used to track and compute a suitable scene texture extent for the renderer based on history / global configuration. */
 class FSceneTextureExtentState
 {
@@ -779,6 +811,31 @@ void FSceneTextures::InitializeViewFamily(FRDGBuilder& GraphBuilder, FViewFamily
 			}
 		}
 	}
+
+	// BEGIN META SECTION - XR Soft Occlusions
+	{
+		FTextureRHIRef EnvironmentDepthRHI;
+		FTextureRHIRef EnvironmentDepthMinMaxRHI;
+
+		if (FindEnvironmentDepthTexture_RenderThread(
+			EnvironmentDepthRHI,
+			EnvironmentDepthMinMaxRHI,
+			SceneTextures.DepthFactors,
+			SceneTextures.ScreenToDepthMatrices,
+			SceneTextures.DepthViewProjMatrices))
+		{
+			SceneTextures.EnvironmentDepthTexture = RegisterExternalTexture(
+				GraphBuilder,
+				EnvironmentDepthRHI,
+				TEXT("EnvironmentDepth"));
+
+			SceneTextures.EnvironmentDepthMinMaxTexture = RegisterExternalTexture(
+				GraphBuilder,
+				EnvironmentDepthMinMaxRHI,
+				TEXT("EnvironmentDepthMinMax"));
+		}
+	}
+	// END META SECTION - XR Soft Occlusions
 
 #if WITH_EDITOR
 	{

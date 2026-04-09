@@ -103,6 +103,12 @@
 #include "VelocityCommon.ush"
 #include "DBufferDecalShared.ush"
 #include "ShadingModelsSampling.ush"
+
+// BEGIN META SECTION - XR Soft Occlusions
+#if ENABLE_SOFT_OCCLUSIONS
+	#include "EnvironmentDepthOcclusion.ush"
+#endif
+// END META SECTION - XR Soft Occlusions
 #include "SGGX.ush"
 
 #include "SceneTexturesCommon.ush"
@@ -2485,6 +2491,13 @@ void FPixelShaderInOut_MainPS(
 	}
 #endif // OIT_ENABLED
 
+	// BEGIN META SECTION - XR Soft Occlusions
+#if ENABLE_SOFT_OCCLUSIONS
+	Out.MRT[0].rgba = EnvironmentDepthOcclusion(Out.MRT[0].rgba, float4(MaterialParameters.WorldPosition_CamRelative, 1.0f), View.StereoPassIndex);
+#endif
+// END META SECTION - XR Soft Occlusions
+
+	
 	Out.MRT[0].xyz = min(Out.MRT[0].xyz, View.MaterialMaxEmissiveValue.xxx);
 
 #if MATERIAL_VIRTUALTEXTURE_FEEDBACK || LIGHTMAP_VT_ENABLED
